@@ -1,0 +1,25 @@
+.preview-img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 0.5rem;
+    border: 4px solid white;
+}
+
+@keyframes animate_image_success {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+    100% {
+        transform: scale(1);
+        
+    }
+}
+
+.animation__image-success {
+    animation: animate_image_success 1.25s ease-in-out;
+}

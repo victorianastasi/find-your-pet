@@ -1,0 +1,28 @@
+.card__image {
+  border-radius: 0.5rem 0.5rem 0 0;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  object-position: center;
+  min-width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .card__image {
+    border-radius: 0.5rem 0 0 0.5rem;
+    min-width: 300px;
+  }
+}
+
+.card__contact a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  color: rgb(37 99 235);
+}
+.card__contact a:hover,
+.card__contact a:visited {
+  color: rgb(30 64 175);
+}
+
+.card__contact a:focus {
+  outline-color: rgb(30 64 175);
+}
