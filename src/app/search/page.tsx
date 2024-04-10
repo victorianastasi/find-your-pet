@@ -9,7 +9,7 @@ export default function Search() {
   const { itemsList, loaded } = GetData();
 
   return (
-    <div className="main-bg pt-14 md:pt-16">
+    <div className="main-bg pt-14 md:pt-16 mb-10">
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">Publicaciones</h1>
       {loaded ? 
       (
@@ -26,21 +26,6 @@ export default function Search() {
         />
       </div>
       }
-
-        <h1 className="mt-5 pt-5">search title</h1>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
-        <p className="mt-5 py-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam expedita dicta nisi enim. Vitae beatae laboriosam officiis est eum laudantium ipsa nulla ea perspiciatis. Totam facilis officia saepe aliquid inventore!</p>
     </div>
   );
 }

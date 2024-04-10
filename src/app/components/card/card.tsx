@@ -1,7 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
-import { FaPhoneSquareAlt } from "react-icons/fa";
-import { IoMail, IoSquare, IoChatbubbleEllipsesSharp } from "react-icons/io5";
+import { IoMail, IoSquare } from "react-icons/io5";
 import { IoLogoWhatsapp } from "react-icons/io";
 import "./card.css";
 
@@ -46,13 +45,15 @@ const CardImage: React.FC<{ alt?: string; src?: string }> = ({
   src = defaulPets,
 }) => {
   return (
-    <Image
-      src={src == "" ? defaulPets : src}
-      alt={alt}
-      width={300}
-      height={180}
-      className="card__image"
-    ></Image>
+    <div className="md:w-[300px] md:min-w-[300px] h-[180px] md:h-full relative ">
+      <Image
+        src={src == "" ? defaulPets : src}
+        alt={alt}
+        fill={true}
+        className="object-cover object-center card__image"
+      ></Image>
+    </div>
+    
   );
 };
 
@@ -93,8 +94,7 @@ export const CardComponent: React.FC<CardComponentProps> = (
     date
   } = props;
 
-  let cardClassName = `flex flex-col md:flex-row gap-2 w-full max-w-xs md:max-w-[620px] bg-slate-200 rounded-lg text-slate-800 shadow-2xl cabin-400 ${customClass}`;
-  /* let cardClassName = `flex flex-col md:flex-row gap-2 w-full max-w-xs md:max-w-2xl lg:max-w-5xl bg-slate-200 rounded-lg text-slate-800 shadow-2xl ${customClass}`; */
+  let cardClassName = `flex flex-col md:flex-row md:gap-2 w-full max-w-xs md:max-w-[620px] bg-slate-200 rounded-lg text-slate-800 shadow-2xl cabin-400 ${customClass}`;
 
   return (
     <div className={cardClassName}>
@@ -126,12 +126,6 @@ export const CardComponent: React.FC<CardComponentProps> = (
             </CardContact>
           )}
         </div>
-        {/* <hr className="bg-slate-300 h-[2px]" />
-        <div className="flex items-center justify-end text-xs gap-1">
-            <IoChatbubbleEllipsesSharp className="inline-block text-sm" />
-            <span>Comentarios</span>
-            <span className="">0</span>
-        </div> */}
       </div>
     </div>
   );

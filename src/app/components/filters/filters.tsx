@@ -7,9 +7,8 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import { IoIosCloseCircle, IoMdArrowRoundDown } from "react-icons/io";
 import { HiMiniArrowsUpDown } from "react-icons/hi2";
 import { CardComponent } from "../card/card";
-import { IoSearch, IoClose } from "react-icons/io5";
+import { IoSearch } from "react-icons/io5";
 import "./filters.css";
-
 
 interface FilterProps {
   list?: Item[];
@@ -36,8 +35,9 @@ export const FilterComponent: React.FC<FilterProps> = (
   const inputSearch = useRef<HTMLInputElement>(null);
   const buttonFilter = useRef<HTMLButtonElement>(null);
   const contentFilter = useRef<HTMLDivElement>(null);
-  const [searchLocation, setSearchLocation] = useState("");
   const [searchIcon, setSearchIcon] = useState(false);
+
+  const [filteredDepartments, setFilteredDepartments] = useState(departments);
 
   useEffect(() => {
     fetch(
@@ -55,6 +55,11 @@ export const FilterComponent: React.FC<FilterProps> = (
         console.error("Error fetching data:", error);
       });
   }, []);
+
+  useEffect(() => {
+    // Aplicar el filtro cuando departments cambie
+    setFilteredDepartments(departments);
+  }, [departments]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchName(event.target.value);
@@ -142,20 +147,29 @@ export const FilterComponent: React.FC<FilterProps> = (
     );
   };
 
+  //Buscador de localidades
   //Input para buscar localidades
   const inputLocationFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     setShowList(true);
-    setSearchIcon(true);
-  };
-  
-  const inputLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchLocation(event.target.value);
-    setSearchIcon(true);
   };
 
-  const filteredDepartments = departments.filter((department) =>
-    department.toLowerCase().includes(searchLocation.toLowerCase())
-  );
+  const inputLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.target.value == "" ? setSearchIcon(false) : setSearchIcon(true);
+    let filtered = [];
+    filtered = departments.filter((department) =>
+      department.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    setFilteredDepartments(filtered);
+  };
+
+  const inputLocationClear = () => {
+    if (inputSearch.current) {
+      inputSearch.current.value = "";
+    }
+    setFilteredDepartments(departments);
+    setSelectedLocation("");
+    setSearchIcon(false);
+  };
 
   const selectLocationInput = (event: React.MouseEvent<HTMLButtonElement>) => {
     const buttonLocation = event.currentTarget.textContent || "";
@@ -167,20 +181,26 @@ export const FilterComponent: React.FC<FilterProps> = (
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (inputSearch.current && !inputSearch.current.contains(event.target as Node)) {
+    if (
+      inputSearch.current &&
+      !inputSearch.current.contains(event.target as Node)
+    ) {
       setShowList(false);
-      setSearchIcon(false);
     }
-    if (buttonFilter.current && !buttonFilter.current.contains(event.target as Node) && contentFilter.current && !contentFilter.current.contains(event.target as Node)) {
+    if (
+      buttonFilter.current &&
+      !buttonFilter.current.contains(event.target as Node) &&
+      contentFilter.current &&
+      !contentFilter.current.contains(event.target as Node)
+    ) {
       setToggle(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
-    
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   });
 
@@ -196,30 +216,44 @@ export const FilterComponent: React.FC<FilterProps> = (
             className="w-full rounded py-1 px-1 min-w-full input-location-filter"
             ref={inputSearch}
           />
-          <IoSearch size={18} className={`absolute top-2 right-2 text-slate-600 ${searchIcon ? "hidden" : "inline-block"}`}/>
+          <IoSearch
+            size={18}
+            className={`absolute top-2 right-2 text-slate-600 ${
+              searchIcon ? "hidden" : "inline-block"
+            }`}
+          />
+          <button
+            type="reset"
+            className={`absolute top-2 right-2 rounded-full block ${
+              searchIcon ? "inline-block" : "hidden"
+            }`}
+            onClick={inputLocationClear}
+          >
+            <IoIosCloseCircle size={20} color="#B45309" />
+          </button>
           <div
-            className={`absolute top-[2.2rem] bg-slate-50 w-full ${
+            className={`absolute top-[2.2rem] bg-slate-50 w-full z-10 ${
               showList ? "flex-col" : "hidden"
             }`}
           >
-            {filteredDepartments.length == 0 ?
+            {filteredDepartments.length == 0 ? (
               <button
-              className="text-slate-500 px-4 cursor-pointer py-1 text-left w-full" disabled
-            >
-              No hay resultados 😓
-            </button>
-            :
-            filteredDepartments.map((department, index) => (
-              <button
-                key={index}
-                className="hover:bg-slate-600 hover:text-white px-4 py-1 cursor-pointer text-left w-full border-gray-200 border-b-[1px]"
-                onClick={selectLocationInput}
+                className="text-slate-500 px-4 cursor-pointer py-1 text-left w-full"
+                disabled
               >
-                {department}
+                No hay resultados 😓
               </button>
-              
-            ))}
-            
+            ) : (
+              filteredDepartments.map((department, index) => (
+                <button
+                  key={index}
+                  className="hover:bg-slate-600 hover:text-white px-4 py-1 cursor-pointer text-left w-full border-gray-200 border-b-[1px]  focus:outline focus:outline-amber-600 focus:rounded focus:outline-2 "
+                  onClick={selectLocationInput}
+                >
+                  {department}
+                </button>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -272,7 +306,7 @@ export const FilterComponent: React.FC<FilterProps> = (
         <div
           className={`flex flex-col items-start justify-center flex-wrap gap-4 rounded-xl p-3 ${
             toggle
-              ? "absolute top-[42px] left-3 w-[15rem] bg-slate-800/80 "
+              ? "absolute top-[42px] left-3 w-[15rem] bg-slate-800/70 z-10 backdrop-blur"
               : "hidden md:flex md:flex-row md:static md:w-fit bg-transparent"
           }`}
           ref={contentFilter}

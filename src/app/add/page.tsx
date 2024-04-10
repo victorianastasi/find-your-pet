@@ -284,7 +284,7 @@ export default function Add() {
   };
 
   return (
-    <div className="main-bg pt-14 md:pt-16">
+    <div className="main-bg pt-14 md:pt-16 mb-10">
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">
         Agrega una publicación de tu mascota perdida
       </h1>
@@ -292,10 +292,10 @@ export default function Add() {
         <form
           ref={formRef}
           onSubmit={handleSubmit}
-          className="bg-slate-50/50 text-slate-700 p-6 rounded-2xl max-w-full md:max-w-2xl "
+          className="bg-slate-800 text-slate-50 p-6 rounded-2xl max-w-full md:max-w-2xl "
         >
           <fieldset className="flex flex-col md:flex-row justify-center items-center flex-wrap gap-4 md:gap-8 mx-auto ">
-            <legend className="text-slate-700 font-bold w-fit md:w-full mb-6 text-center text-xl">
+            <legend className="text-indigo-100 font-bold w-fit md:w-full mb-6 text-center text-xl tracking-wider py-3">
               Carga los datos de tu mascota perdida
             </legend>
             <div className="w-full md:w-[15rem]">
@@ -303,7 +303,7 @@ export default function Add() {
                 Mascota:{" "}
               </label>
               <select
-                className="rounded py-1 min-w-full"
+                className="rounded py-1 min-w-full text-slate-700"
                 required
                 name="type"
                 id="pet"
@@ -319,7 +319,7 @@ export default function Add() {
               </label>
               <input
                 type="text"
-                className="rounded py-1 px-1 min-w-full"
+                className="rounded py-1 px-1 min-w-full text-slate-700"
                 name="name"
                 id="name"
                 required
@@ -333,13 +333,13 @@ export default function Add() {
                   className="hidden md:inline-block"
                   title="Ingresa la cantidad de años o meses."
                 ></HiQuestionMarkCircle>
-                <small className="inline-block text-slate-600 md:hidden">
+                <small className="inline-block  md:hidden">
                   *Ingresa la cantidad de años o meses.
                 </small>
               </label>
               <input
                 type="text"
-                className="rounded py-1 px-1 min-w-full"
+                className="rounded py-1 px-1 min-w-full text-slate-700"
                 required
                 name="age"
                 id="age"
@@ -351,12 +351,11 @@ export default function Add() {
               </label>
               <input
                 type="date"
-                className="rounded py-1 px-1 min-w-full"
+                className="rounded py-1 px-1 min-w-full text-slate-700"
                 name="date"
                 id="date"
                 max={getCurrentDate()}
                 required
-                //onChange={handleDateChange}
               />
             </div>
             <div className="w-full md:max-w-[32rem]">
@@ -364,7 +363,7 @@ export default function Add() {
                 Descripción:{" "}
               </label>
               <textarea
-                className="rounded py-1 px-1 min-w-full"
+                className="rounded py-1 px-1 min-w-full text-slate-700"
                 required
                 name="description"
                 id="description"
@@ -375,7 +374,7 @@ export default function Add() {
                 Partido:{" "}
               </label>
               <select
-                className="rounded p-1 w-full"
+                className="rounded p-1 w-full text-slate-700"
                 value={selectedDepartment}
                 onChange={handleDepartmentChange}
                 required
@@ -395,7 +394,7 @@ export default function Add() {
                 Localidad:{" "}
               </label>
               <select
-                className="rounded p-1 w-full"
+                className="rounded p-1 w-full text-slate-700"
                 value={selectedLocality}
                 onChange={handleLocalityChange}
                 required
@@ -423,14 +422,14 @@ export default function Add() {
                     className="hidden md:inline-block"
                     title="Selecciona imágenes de tipo .png, .jpg, .jpeg, .svg"
                   ></HiQuestionMarkCircle>
-                  <small className="text-slate-600 inline-block md:hidden">
+                  <small className="text-slate-50 inline-block md:hidden">
                     *Selecciona imágenes de tipo .png, .jpg, .jpeg, .svg
                   </small>
                   <span
-                    className="block bg-slate-700 hover:bg-slate-800 text-white py-1 px-2 rounded w-fit"
+                    className="block bg-amber-600 hover:bg-amber-800  py-1 px-2 rounded w-fit"
                     ref={selectFile}
                   >
-                    Selecciona un archivo
+                    Selecciona una imagen
                   </span>
                 </label>
 
@@ -449,13 +448,13 @@ export default function Add() {
               >
                 <span
                   id="preview-text"
-                  className="w-full md:w-4/5 pl-2"
+                  className="w-full md:w-4/5 pl-2 text-slate-700"
                   ref={previewText}
                 >
                   No hay imagen seleccionada.
                 </span>
                 <span
-                  className={`bg-slate-50 w-full h-full absolute rounded-lg justify-center items-center ${
+                  className={`bg-slate-50 w-full h-full absolute rounded-lg justify-center items-center text-slate-700 ${
                     uploading ? "flex" : "hidden"
                   }`}
                   id="file-loader"

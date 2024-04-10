@@ -23,3 +23,8 @@
 .animation__image-success {
     animation: animate_image_success 1.25s ease-in-out;
 }
+
+select:focus-visible, input[type="text"]:focus-visible, input[type="search"]:focus-visible, input[type="date"]:focus-visible, textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #D97706;
+  }
