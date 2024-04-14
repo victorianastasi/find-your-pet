@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs, Firestore, addDoc } from 'firebase/firestore/lite';
 import { Item } from "../components/models";
 import { getStorage } from 'firebase/storage';
@@ -18,6 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
+// Función para traer datos de Items
 export async function getItems(db: Firestore) {
   const itemsCol = collection(db, 'items');
   const itemsSnapshot = await getDocs(itemsCol);
@@ -34,4 +36,7 @@ export async function addItem(db: Firestore, newItemData: Item) {
     console.error("Error al agregar el item:", error);
   }
 }
+
+export const auth = getAuth(app);
+
 export const storage = getStorage(app);
