@@ -7,13 +7,17 @@ import {
   MdOutlineClose,
 } from "react-icons/md";
 import { FiMenu } from "react-icons/fi";
-import { IoChatboxEllipses } from "react-icons/io5";
+import { IoChatboxEllipses, IoLogIn, IoLogOut } from "react-icons/io5";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 import { HiMiniUserCircle } from "react-icons/hi2";
+import { UserAuth } from "@/app/context/AuthContext";
 
 import { usePathname } from "next/navigation";
 
 export default function NavbarComponent() {
+  const { user, logOut } = UserAuth();
+  console.log(user.email)
+
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
@@ -21,6 +25,18 @@ export default function NavbarComponent() {
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
   const [isContentVisible, setIsContentVisible] = useState(false);
+
+  const handleLogOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await logOut();
+      console.log(user)
+      console.log(user.email)
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   useEffect(() => {
     const handleScroll = (position: number) => {
@@ -100,16 +116,18 @@ export default function NavbarComponent() {
   const LinksStyles =
     "group flex items-center gap-2 text-sm px-4 py-2 leading-none border rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
   const LinksIconStyles =
-    "md:text-white group-hover:text-amber-600 min-w-[24px]";
+    "text-gray-700 md:text-white md:group-hover:text-amber-600";
+  
+    const handleLinkClick = () => {
+    setIsContentVisible(false);
+  };
 
   const Links = () => {
-    const handleLinkClick = () => {
-      setIsContentVisible(false);
-    };
-
+    const filteredLinks = user.email != null ? LINKS_DATA.filter(link => link.href !== "/login") : LINKS_DATA.filter(link => link.href !== "/account");
+    console.log(filteredLinks)
     return (
       <>
-        {LINKS_DATA.map(({ href, text, icon }, index) => (
+        {filteredLinks.map(({ href, text, icon }, index) => (
           <Link
             key={index}
             href={href}
@@ -124,7 +142,7 @@ export default function NavbarComponent() {
               className: `${
                 pathname == href
                   ? "text-amber-600"
-                  : "text-gray-700 md:text-white md:group-hover:text-amber-600"
+                  : LinksIconStyles
               }`,
               size: 24,
             })}
@@ -139,7 +157,8 @@ export default function NavbarComponent() {
     { href: "/search", icon: <MdContentPasteSearch />, text: "Ver todo" },
     { href: "/add", icon: <BiSolidMessageSquareAdd />, text: "Agrega tu mascota" },
     { href: "/contact", icon: <IoChatboxEllipses />, text: "Contactanos" },
-    { href: "/login", icon: <HiMiniUserCircle />, text: "Log In" },
+    { href: "/login", icon: <IoLogIn />, text: "Log In" },
+    { href: "/account", icon: <HiMiniUserCircle />, text: user.email?.charAt(0).toUpperCase() },
   ];
 
   return (
@@ -188,6 +207,11 @@ export default function NavbarComponent() {
               />
             </button>
             <Links />
+            {user.email != null && 
+            <button onClick={handleLogOut} className={LinksStyles}>
+              <IoLogOut size={24} className={LinksIconStyles} />
+              <span className="text-left max-[320px]:text-[13px]">LogOut</span>
+            </button>}
           </div>
         </nav>
         <div

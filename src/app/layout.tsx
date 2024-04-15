@@ -5,7 +5,7 @@ import { Poppins } from 'next/font/google'
 import './globals.css'
 import NavbarComponent from './components/navbar/navbar'
 import { usePathname } from 'next/navigation'
-
+import { AuthContextProvider } from './context/AuthContext'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -28,10 +28,12 @@ export default function RootLayout({
   const pathname = usePathname();
   return (
     <html lang="es">
-      
       <body className={`${poppins.className} relative`} >
-        {<NavbarComponent></NavbarComponent>}
-        {children}</body>
+        <AuthContextProvider>
+          {<NavbarComponent />}
+          {children}
+        </AuthContextProvider>
+        </body>
     </html>
   )
 }

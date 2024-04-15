@@ -8,3 +8,7 @@ export type Item = {
   location: string;
   date: string;
 };
+export type User = {
+  id: string;
+  phone: number;
+};

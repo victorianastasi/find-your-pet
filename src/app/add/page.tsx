@@ -5,13 +5,20 @@ import { HiQuestionMarkCircle } from "react-icons/hi2";
 import { addItem, db, storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./add.css";
-import { IoTrashSharp } from "react-icons/io5";
+import { IoLogIn, IoTrashSharp } from "react-icons/io5";
 import { BsSendCheck } from "react-icons/bs";
 import { FiCheckCircle } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
+import { FcLock } from "react-icons/fc";
+
 import { Grid } from "react-loader-spinner";
+import Link from "next/link";
+import { UserAuth } from "../context/AuthContext";
 
 export default function Add() {
+  const { user } = UserAuth();
+  console.log(user.email)
+
   const formRef = useRef<HTMLFormElement>(null);
   const previewImg = useRef<HTMLImageElement>(null);
   const previewActions = useRef<HTMLDivElement>(null);
@@ -284,7 +291,21 @@ export default function Add() {
   };
 
   return (
-    <div className="main-bg pt-14 md:pt-16 mb-10">
+    <div className="main-bg pt-14 md:pt-16 mb-10 relative">
+      {user.email == null && 
+      <div className="h-full w-full bg-gray-200/80 absolute backdrop-blur z-[5]">
+        <div className="flex flex-col gap-8 items-center text-slate-700 mt-24 font-bold max-w-72 mx-auto">
+          <FcLock size={120}/>
+          <p className="text-center text-lg">Inicia sesión en tu cuenta para acceder a esta sección</p>
+          <Link
+            href="/login"
+            className="group flex items-center gap-2 px-4 py-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700 bg-gray-700 text-white shadow-lg"
+          >
+            <IoLogIn  size={24} />
+            <span className="text-center">Login</span>
+          </Link>
+        </div>
+      </div>}
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">
         Agrega una publicación de tu mascota perdida
       </h1>

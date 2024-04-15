@@ -1,18 +1,21 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase"; 
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updatePhoneNumber, updateProfile } from "firebase/auth";
+import { addUser, auth, db } from "../firebase"; 
+import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation'
 import { HiQuestionMarkCircle } from "react-icons/hi2";
 import { IoEye, IoEyeOff  } from "react-icons/io5";
+import { UserAuth } from "@/app/context/AuthContext";
+import firebase from "firebase/compat/app";
 
 export default function SignUp() {
 
-  const [Credentials, setCredentials] = useState({email:"", pass:""});
+  const [Credentials, setCredentials] = useState({email:"", pass:"", userName:"", phone:0});
   const [visibilityPass, setVisibilityPass] = useState(false);
-  const inputPass =useRef<HTMLInputElement>(null);
-
-  const {push} = useRouter();
+  const inputPass = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const changeUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({
@@ -22,18 +25,48 @@ export default function SignUp() {
     console.log(Credentials)
   }
 
-  const registerUser = async () => {
+  const registerUser = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(Credentials)
-    try {
-        await createUserWithEmailAndPassword(auth, Credentials.email, Credentials.pass);
+    e.preventDefault();
+    setError("");
+    createUserWithEmailAndPassword(auth, Credentials.email, Credentials.pass)
+      .then((userCredential) => {
 
-        console.log(Credentials.email, Credentials.pass)
+        const user = userCredential.user;
+        updateProfile(user, {displayName: Credentials.userName});
+        
+        
+        console.log("Registro exitoso:", user);
+        
+      }).then(() => {
+        router.push("/signup-success");
+        prompt("cuenta creada con exito")
+      }) 
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error("Error al registrar:", errorCode, errorMessage);
+        setError(errorMessage);
+      });
+    console.log(Credentials)
+    /* try {
+      await createUserWithEmailAndPassword(auth, Credentials.email, Credentials.pass).catch((err) =>
+        console.log(err)
+      );
+      if(auth.currentUser) {
+        await updateProfile(auth.currentUser, { displayName: Credentials.userName }).catch(
+          (err) => console.log(err)
+        );
+      }
+      push("/");
+      console.log(Credentials.email, Credentials.pass)
     }
     catch(error) {
-        console.log(error)
-    }
+      console.log(error)
+    } */
   }
-  
+
+
   const toggleVisibility = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setVisibilityPass(!visibilityPass);
@@ -53,6 +86,35 @@ export default function SignUp() {
             <span className="block font-bold text-2xl tracking-wider mb-3">Crea tu cuenta</span> 
             <span className="text-slate-500">Ingresa tu email y contraseña para registarte</span>
             </legend>
+
+            <div className="w-full">
+              <label htmlFor="userName" className="flex items-center flex-wrap mb-2">
+                <span className="mr-2">Nombre de usuario </span>
+                
+              </label>
+              <input
+                type="text"
+                className="rounded py-1 px-1 min-w-full text-slate-700 min-h-[36px]"
+                name="userName"
+                id="userName"
+                onChange={changeUser}
+                required
+              />
+            </div>
+            <div className="w-full">
+              <label htmlFor="phone" className="flex items-center flex-wrap mb-2">
+                <span className="mr-2">Teléfono </span>
+                
+              </label>
+              <input
+                type="number"
+                className="rounded py-1 px-1 min-w-full text-slate-700 min-h-[36px]"
+                name="phone"
+                id="phone"
+                onChange={changeUser}
+                required
+              />
+            </div>
             
             <div className="w-full">
               <label htmlFor="email" className="flex items-center flex-wrap mb-2">
@@ -73,6 +135,7 @@ export default function SignUp() {
                 id="email"
                 placeholder="ejemplo@mail.com"
                 onChange={changeUser}
+                required
               />
             </div>
             <div className="w-full relative">
@@ -95,6 +158,8 @@ export default function SignUp() {
                 placeholder="••••••"
                 onChange={changeUser}
                 ref={inputPass}
+                min-length={6}
+                required
               />              
               <button onClick={toggleVisibility}>
                 {React.cloneElement(visibilityPass ? <IoEyeOff /> : <IoEye />, {
@@ -104,7 +169,7 @@ export default function SignUp() {
               </button>
             </div>
             <button
-              className="block bg-slate-700 hover:bg-slate-800 text-white py-2 px-4 rounded w-fit"
+              className="block bg-slate-700 hover:bg-slate-800 text-white py-2 px-4 rounded-full w-fit min-w-[200px]"
               type="submit"
               onClick={registerUser}
             >

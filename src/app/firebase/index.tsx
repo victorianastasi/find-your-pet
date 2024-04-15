@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs, Firestore, addDoc } from 'firebase/firestore/lite';
-import { Item } from "../components/models";
+import { Item, User } from "../components/models";
 import { getStorage } from 'firebase/storage';
 
 // web app's Firebase configuration
@@ -34,6 +34,15 @@ export async function addItem(db: Firestore, newItemData: Item) {
     await addDoc(itemsCol, newItemData);
   } catch (error) {
     console.error("Error al agregar el item:", error);
+  }
+}
+// Función para agregar un nuevo user a la colección users
+export async function addUser(db: Firestore, newUserData: User) {
+  try {
+    const itemsCol = collection(db, 'users');
+    await addDoc(itemsCol, newUserData);
+  } catch (error) {
+    console.error("Error al agregar el user:", error);
   }
 }
 
