@@ -17,7 +17,7 @@ import { UserAuth } from "../context/AuthContext";
 
 export default function Add() {
   const { user } = UserAuth();
-  console.log(user.email)
+  console.log(user)
 
   const formRef = useRef<HTMLFormElement>(null);
   const previewImg = useRef<HTMLImageElement>(null);
@@ -220,6 +220,8 @@ export default function Add() {
       formData.get("description") as string
     );
     const date = formatDate(formData.get("date") as string);
+    const email = user.email;
+    const userName = user.displayName;
 
     const newData = {
       type,
@@ -230,6 +232,8 @@ export default function Add() {
       description,
       image: imageUrl,
       date,
+      email,
+      userName,
     };
     console.log(newData);
 

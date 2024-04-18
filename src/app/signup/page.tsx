@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updatePhoneNumber, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addUser, auth, db } from "../firebase"; 
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation'
@@ -11,7 +11,7 @@ import firebase from "firebase/compat/app";
 
 export default function SignUp() {
 
-  const [Credentials, setCredentials] = useState({email:"", pass:"", userName:"", phone:0});
+  const [Credentials, setCredentials] = useState({email:"", pass:"", userName:""});
   const [visibilityPass, setVisibilityPass] = useState(false);
   const inputPass = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -101,7 +101,7 @@ export default function SignUp() {
                 required
               />
             </div>
-            <div className="w-full">
+            {/* <div className="w-full">
               <label htmlFor="phone" className="flex items-center flex-wrap mb-2">
                 <span className="mr-2">Teléfono </span>
                 
@@ -114,7 +114,7 @@ export default function SignUp() {
                 onChange={changeUser}
                 required
               />
-            </div>
+            </div> */}
             
             <div className="w-full">
               <label htmlFor="email" className="flex items-center flex-wrap mb-2">
@@ -144,10 +144,10 @@ export default function SignUp() {
                 <HiQuestionMarkCircle
                   size={16}
                   className="hidden md:inline-block cursor-pointer text-amber-700"
-                  title="Debe tener 6 caracteres."
+                  title="Debe tener al menos 6 caracteres."
                 ></HiQuestionMarkCircle>
                 <small className="inline-block  md:hidden">
-                  *Debe tener como mínimo 6 caracteres.
+                  *Debe tener al menos 6 caracteres.
                 </small>
               </label>
               <input

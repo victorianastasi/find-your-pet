@@ -342,6 +342,8 @@ export const FilterComponent: React.FC<FilterProps> = (
                 description={item.description}
                 age={item.age}
                 date={item.date}
+                email={item.email}
+                userName={item.userName}
               />
             ))
         )}

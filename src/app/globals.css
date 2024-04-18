@@ -44,13 +44,13 @@ main {
   font-family: "Poppins", sans-serif !important;
   font-weight: 700;
   font-style: normal;
-  color: rgb(15, 15, 15) !important;
+/*   color: rgb(15, 15, 15) !important; */
 }
 .cabin-400 {
   font-family: "Cabin", sans-serif !important;
   font-weight: 400;
   font-style: normal;
-  color: rgb(15, 15, 15) !important;
+/*   color: rgb(15, 15, 15) !important; */
 }
 .cabin {
   font-family: "Cabin", sans-serif !important;

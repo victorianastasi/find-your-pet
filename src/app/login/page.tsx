@@ -5,6 +5,7 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 import { IoMdCloseCircle } from "react-icons/io";
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
+import { Circles } from "react-loader-spinner";
 
 export default function LogIn() {
   const [Credentials, setCredentials] = useState({email:"", pass:""});
@@ -14,6 +15,7 @@ export default function LogIn() {
   const inputEmail = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const router = useRouter();
+  const [loader, setLoader] = useState(false);
   
   const toggleVisibility = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -32,6 +34,7 @@ export default function LogIn() {
 
   const logInUser =  (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setLoader(true);
     setError(""); 
     signInWithEmailAndPassword(auth, Credentials.email, Credentials.pass)
       .then((userCredential) => {
@@ -50,21 +53,30 @@ export default function LogIn() {
   }
 
   return (
-    <div className="main-bg pt-14 md:pt-16 mb-10  h-screen">
+    <div className="main-bg pt-14 md:pt-16 mb-10  h-screen relative">
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">
         Log In
       </h1>
       <div className="flex justify-center mx-2 md:mx-0">
+        <div className={`absolute h-[300px] w-full max-w-[264px] rounded-2xl md:rounded-full md:h-[384px] sm:max-w-sm bg-slate-50/80 text-slate-700 text-center flex-col justify-center ${loader ? 'flex' : 'hidden'}`}>
+          <p className="text-lg">Accediendo a tu cuenta</p>
+          <Circles
+            height="80"
+            width="80"
+            color="#D97808"
+            wrapperClass="justify-center mt-4"
+            />
+        </div>
         <form
-          className="bg-slate-50/80 text-slate-700 p-6 md:px-12 rounded-2xl max-w-full md:max-w-sm "
+          className={`bg-slate-50/80 text-slate-700 p-6 md:px-12 rounded-2xl max-w-full md:max-w-sm ${loader ? 'hidden' : 'block'}`}
         >
           <fieldset className="flex flex-col md:flex-row justify-center items-center flex-wrap gap-4 md:gap-8 mx-auto ">
             <legend className=" w-fit md:w-full mb-6 text-center py-3">
             <span className="block font-bold text-2xl tracking-wider mb-3">Ingresa a tu cuenta</span> 
             <span className="text-slate-500">Ingresa tu email y contraseña para acceder</span>
             </legend>
-            {error && <div className="text-red-500">{error} esto es un texto</div>}
-            {!error && <div className="text-green-500">{error} esto es un texto</div>}
+            {/* {error && <div className="text-red-500">{error} esto es un texto</div>}
+            {!error && <div className="text-green-500">{error} esto es un texto</div>} */}
             <div className="w-full">
               <label htmlFor="email" className="flex items-center flex-wrap mb-2">
                 <span className="mr-2">Correo electrónico </span>

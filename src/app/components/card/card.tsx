@@ -2,7 +2,10 @@ import * as React from "react";
 import Image from "next/image";
 import { IoMail, IoSquare } from "react-icons/io5";
 import { IoLogoWhatsapp } from "react-icons/io";
+import { RiUserFill } from "react-icons/ri";
+
 import "./card.css";
+import { UserAuth } from "@/app/context/AuthContext";
 
 interface CardContactProps {
   children?: React.ReactNode;
@@ -18,6 +21,8 @@ interface CardComponentProps {
   customClass?: string;
   age?: string;
   date?: string;
+  email?: string;
+  userName?: string;
 }
 
 const CardBadge: React.FC<{ children?: string; customClass?: string }> = ({
@@ -91,10 +96,14 @@ export const CardComponent: React.FC<CardComponentProps> = (
     description,
     customClass = "",
     age,
-    date
+    date,
+    email,
+    userName
   } = props;
 
-  let cardClassName = `flex flex-col md:flex-row md:gap-2 w-full max-w-xs md:max-w-[620px] bg-slate-200 rounded-lg text-slate-800 shadow-2xl cabin-400 ${customClass}`;
+  const { user } = UserAuth();
+  console.log(user)
+  let cardClassName = `flex flex-col md:flex-row md:gap-2 w-full max-w-xs md:max-w-[620px] bg-slate-200 rounded-lg text-slate-700 shadow-2xl cabin-400 ${customClass}`;
 
   return (
     <div className={cardClassName}>
@@ -113,7 +122,24 @@ export const CardComponent: React.FC<CardComponentProps> = (
         <hr className="bg-slate-300 h-[2px]" />
         <div className="text-sm">
           <p className="mb-1">Publicado por:</p>
-          {location && (
+          {user.email == null ? 
+          <div className="bg-indigo-50/80 rounded p-2 text-slate-600">
+            <p>Debes <a href="/login" className="text-blue-600 hover:text-blue-800 visited:text-blue-800">acceder a tu cuenta </a>para ver esta sección.</p>
+          </div>
+          : 
+          <>
+            <CardContact icon={<RiUserFill />}>
+              Usuario:&nbsp;
+              {userName}
+            </CardContact>
+            <CardContact icon={<IoMail />}>
+              Email:&nbsp;
+              <a href={`mailto:${email}`}>{email}</a>
+            </CardContact>
+          </>
+          }
+          
+          {/* {location && (
             <CardContact icon={<IoLogoWhatsapp />}>
               Teléfono:&nbsp;
               <a href={`tel:${location}`}>{location}</a>
@@ -124,7 +150,7 @@ export const CardComponent: React.FC<CardComponentProps> = (
               Email:&nbsp;
               <a href={`mailto:${district}`}>{district}</a>
             </CardContact>
-          )}
+          )} */}
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ export type Item = {
   district: string;
   location: string;
   date: string;
+  email: string;
+  userName: string;
 };
 export type User = {
   id: string;

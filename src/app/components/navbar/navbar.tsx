@@ -208,7 +208,7 @@ export default function NavbarComponent() {
             </button>
             <Links />
             {user.email != null && 
-            <button onClick={handleLogOut} className={LinksStyles}>
+            <button onClick={handleLogOut} className={`${LinksStyles} text-gray-700 md:border-slate-50  md:text-white`}>
               <IoLogOut size={24} className={LinksIconStyles} />
               <span className="text-left max-[320px]:text-[13px]">LogOut</span>
             </button>}

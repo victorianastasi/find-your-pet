@@ -13,11 +13,12 @@ const AuthContext = createContext<any | null>(null);
 interface UserType {
 	email: string | null;
 	uid: string | null;
+	displayName: string | null;
 }
 
 export const AuthContextProvider = ({children,}: {children: React.ReactNode;}) => {
 	// Define the constants for the user and loading state
-	const [user, setUser] = useState<UserType>({ email: null, uid: null });
+	const [user, setUser] = useState<UserType>({ email: null, uid: null, displayName: null });
 	const [loading, setLoading] = useState<Boolean>(true);
 
 	useEffect(() => {
@@ -26,9 +27,10 @@ export const AuthContextProvider = ({children,}: {children: React.ReactNode;}) =
 				setUser({
 					email: user.email,
 					uid: user.uid,
+					displayName: user.displayName
 				});
 			} else {
-				setUser({ email: null, uid: null });
+				setUser({ email: null, uid: null, displayName: null });
 			}
 		});
 
@@ -49,7 +51,7 @@ export const AuthContextProvider = ({children,}: {children: React.ReactNode;}) =
 
 	// Logout the user
 	const logOut = async () => {
-		setUser({ email: null, uid: null });
+		setUser({ email: null, uid: null, displayName: null });
 		return await signOut(auth);
 	};
 
