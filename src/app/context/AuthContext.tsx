@@ -10,7 +10,7 @@ import { auth } from '../firebase';
 const AuthContext = createContext<any | null>(null);
 
 // User data type interface
-interface UserType {
+export interface UserType {
 	email: string | null;
 	uid: string | null;
 	displayName: string | null;
@@ -40,7 +40,7 @@ export const AuthContextProvider = ({children,}: {children: React.ReactNode;}) =
 	}, []);
 
 	// Sign up the user
-	const signUp = (email: string, password: string) => {
+	const signUpFunction = (email: string, password: string) => {
 		return createUserWithEmailAndPassword(auth, email, password);
 	};
 
@@ -56,7 +56,7 @@ export const AuthContextProvider = ({children,}: {children: React.ReactNode;}) =
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, signUp, logIn, logOut }}>
+		<AuthContext.Provider value={{ user, signUpFunction, logIn, logOut }}>
 			{loading ? null : children}
 		</AuthContext.Provider>
 	);

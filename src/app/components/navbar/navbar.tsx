@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 
 export default function NavbarComponent() {
   const { user, logOut } = UserAuth();
-  console.log(user.email)
+  /* console.log(user.email) */
 
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -30,8 +30,8 @@ export default function NavbarComponent() {
     e.preventDefault();
     try {
       await logOut();
-      console.log(user)
-      console.log(user.email)
+      /* console.log(user)
+      console.log(user.email) */
     } catch (error) {
       console.log(error);
     }
@@ -124,7 +124,7 @@ export default function NavbarComponent() {
 
   const Links = () => {
     const filteredLinks = user.email != null ? LINKS_DATA.filter(link => link.href !== "/login") : LINKS_DATA.filter(link => link.href !== "/account");
-    console.log(filteredLinks)
+    /* console.log(filteredLinks) */
     return (
       <>
         {filteredLinks.map(({ href, text, icon }, index) => (
