@@ -1,0 +1,7 @@
+.invalid {
+    outline: 2px solid rgb(185 28 28);
+    outline-offset: 1px;
+}
+.invalid:focus {
+    outline-color: black;
+}

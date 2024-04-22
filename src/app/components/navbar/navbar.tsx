@@ -7,7 +7,7 @@ import {
   MdOutlineClose,
 } from "react-icons/md";
 import { FiMenu } from "react-icons/fi";
-import { IoChatboxEllipses, IoLogIn, IoLogOut } from "react-icons/io5";
+import { IoChatboxEllipses, IoLogIn, IoLogOut, IoChevronDown  } from "react-icons/io5";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 import { HiMiniUserCircle } from "react-icons/hi2";
 import { UserAuth } from "@/app/context/AuthContext";
@@ -16,26 +16,24 @@ import { usePathname } from "next/navigation";
 
 export default function NavbarComponent() {
   const { user, logOut } = UserAuth();
-  /* console.log(user.email) */
 
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
   const headerContentRef = useRef<HTMLDivElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
+  const toggleAccountRef = useRef<HTMLDivElement>(null);
 
   const [isContentVisible, setIsContentVisible] = useState(false);
+  const [isAccountVisible, setIsAccountVisible] = useState(false);
 
   const handleLogOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       await logOut();
-      /* console.log(user)
-      console.log(user.email) */
     } catch (error) {
       console.log(error);
     }
-
   }
 
   useEffect(() => {
@@ -79,9 +77,15 @@ export default function NavbarComponent() {
       setIsContentVisible(!isContentVisible);
     }
   };
+
   const close = () => {
     setIsContentVisible(false);
   };
+
+  const toggleAccount = () => {
+    setIsAccountVisible(!isAccountVisible);
+  };
+  
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -103,18 +107,24 @@ export default function NavbarComponent() {
         !toggleButtonRef.current.contains(event.target as Node)
       ) {
         setIsContentVisible(false);
+        setIsAccountVisible(false);
+      } else if (
+        toggleAccountRef.current &&
+        !toggleAccountRef.current.contains(event.target as Node)
+      ) {
+        setIsAccountVisible(false);
       }
     };
-
+  
     document.addEventListener("mousedown", handleClickOutside);
-
+  
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
-
+  }, [headerContentRef, toggleButtonRef, toggleAccountRef]);
+  
   const LinksStyles =
-    "group flex items-center gap-2 text-sm px-4 py-2 leading-none border rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
+    "group flex items-center gap-2 text-sm px-4 py-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
   const LinksIconStyles =
     "text-gray-700 md:text-white md:group-hover:text-amber-600";
   
@@ -123,8 +133,7 @@ export default function NavbarComponent() {
   };
 
   const Links = () => {
-    const filteredLinks = user.email != null ? LINKS_DATA.filter(link => link.href !== "/login") : LINKS_DATA.filter(link => link.href !== "/account");
-    /* console.log(filteredLinks) */
+    const filteredLinks = user.email != null ? LINKS_DATA.filter(link => link.href !== "/login") : LINKS_DATA;
     return (
       <>
         {filteredLinks.map(({ href, text, icon }, index) => (
@@ -157,8 +166,7 @@ export default function NavbarComponent() {
     { href: "/search", icon: <MdContentPasteSearch />, text: "Ver todo" },
     { href: "/add", icon: <BiSolidMessageSquareAdd />, text: "Agrega tu mascota" },
     { href: "/contact", icon: <IoChatboxEllipses />, text: "Contactanos" },
-    { href: "/login", icon: <IoLogIn />, text: "Log In" },
-    { href: "/account", icon: <HiMiniUserCircle />, text: user.email?.charAt(0).toUpperCase() },
+    { href: "/login", icon: <IoLogIn />, text: "Log In" }
   ];
 
   return (
@@ -195,7 +203,7 @@ export default function NavbarComponent() {
             </button>
           </div>
           <div
-            className={`md:flex md:flex-row gap-4  md:bg-transparent md:w-auto md:min-h-fit md:pt-0 md:px-0 flex flex-col ml-auto min-h-screen w-2/3 rounded-md absolute md:static top-[56px] right-0 bg-white/80 backdrop-blur-md ${
+            className={`md:flex md:flex-row gap-4  md:bg-transparent md:w-auto md:min-h-fit md:pt-0 md:px-0 flex flex-col ml-auto min-h-screen w-4/5 rounded-md absolute md:static top-[56px] right-0 bg-white/80 backdrop-blur-md ${
               isContentVisible ? "navbar-slide-in" : "navbar-slide-out"
             }`}
             ref={headerContentRef}
@@ -208,10 +216,22 @@ export default function NavbarComponent() {
             </button>
             <Links />
             {user.email != null && 
-            <button onClick={handleLogOut} className={`${LinksStyles} text-gray-700 md:border-slate-50  md:text-white`}>
-              <IoLogOut size={24} className={LinksIconStyles} />
-              <span className="text-left max-[320px]:text-[13px]">LogOut</span>
-            </button>}
+            <div className="md:relative mx-6 md:mx-0" ref={toggleAccountRef}>
+              <button  onClick={toggleAccount} className={`group flex items-center gap-2 text-sm px-4 py-2 leading-none rounded-full border-2 md:border-1 md:hover:bg-slate-900  max-w-[205px] border-gray-700 md:text-white w-full text-gray-700 ${isAccountVisible ? "bg-slate-900 text-white md:border-slate-900" : "bg-transparent md:border-slate-50 md:hover:border-slate-900"}`} >
+                <HiMiniUserCircle size={24} className={`md:text-white md:group-hover:text-amber-400 `} />
+                <span className={`text-left max-[320px]:text-[13px]`}>Tu cuenta</span>
+                <IoChevronDown size={20} className={`md:text-white  ml-auto transition-all ${isAccountVisible ? "rotate-180" : "rotate-0"}`} />
+              </button>
+              <div className={`p-2 md:absolute right-0 top-12 md:min-w-56 border-2 border-slate-50 bg-slate-50/50 md:bg-slate-50 backdrop-blur-md text-slate-600 rounded-lg mt-1 md:mt-0 max-w-[405px] ${isAccountVisible ? "block" : "hidden"} md:text-right`}>
+                <p className="text-sm mb-4 pl-1 break-words">Usuario: <span className="font-bold">{user.displayName}</span></p>
+                <p className="text-sm mb-4 pl-1 break-words">Email: <span className="font-bold">{user.email}</span></p>
+                <button onClick={handleLogOut} className={`group flex items-center gap-2 text-sm px-4 py-1 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 md:ml-auto`}>
+                  <IoLogOut size={24} />
+                  <span className="text-left font-semibold">Cerrar sesión</span>
+                </button>
+              </div>
+            </div>
+            }
           </div>
         </nav>
         <div
