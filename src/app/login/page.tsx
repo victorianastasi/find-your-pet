@@ -17,7 +17,7 @@ export default function LogIn() {
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-console.log(visibilityPass)
+
   const {
     register,
     handleSubmit,

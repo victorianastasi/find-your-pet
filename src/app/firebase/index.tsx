@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, collection, getDocs, Firestore, addDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, Firestore, addDoc, setDoc, doc } from 'firebase/firestore/lite';
 import { Item, User } from "../components/models";
 import { getStorage } from 'firebase/storage';
 
@@ -36,13 +36,26 @@ export async function addItem(db: Firestore, newItemData: Item) {
     console.error("Error al agregar el item:", error);
   }
 }
+
+// Función para traer datos de Users
+export async function getUsers(db: Firestore) {
+  const usersCol = collection(db, 'users');
+  const usersSnapshot = await getDocs(usersCol);
+  const usersList = usersSnapshot.docs.map(doc => doc.data());
+  return usersList;
+}
+
 // Función para agregar un nuevo user a la colección users
-export async function addUser(db: Firestore, newUserData: User) {
+export async function addUser(db: Firestore, newUserData: User, uid: string) {
   try {
-    const itemsCol = collection(db, 'users');
-    await addDoc(itemsCol, newUserData);
+    const usersCol = collection(db, 'users');
+    const docRef = doc(usersCol, uid);
+    await setDoc(docRef, newUserData); 
+
+    console.log("Usuario agregado correctamente:", uid);
   } catch (error) {
-    console.error("Error al agregar el user:", error);
+    console.error("Error al agregar el usuario:", error);
+    throw error; 
   }
 }
 

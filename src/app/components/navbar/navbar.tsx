@@ -13,9 +13,17 @@ import { HiMiniUserCircle } from "react-icons/hi2";
 import { UserAuth } from "@/app/context/AuthContext";
 
 import { usePathname } from "next/navigation";
+import GetUsers from "../getUsers/getUsers";
 
 export default function NavbarComponent() {
   const { user, logOut } = UserAuth();
+
+  const { usersList, } = GetUsers();
+  console.log(usersList)
+  const foundUser = usersList.find((userData) => userData.id === user.uid);
+
+console.log(foundUser);
+
 
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -223,9 +231,10 @@ export default function NavbarComponent() {
                 <IoChevronDown size={20} className={`md:text-white  ml-auto transition-all ${isAccountVisible ? "rotate-180" : "rotate-0"}`} />
               </button>
               <div className={`p-2 md:absolute right-0 top-12 md:min-w-56 border-2 border-slate-50 bg-slate-50/50 md:bg-slate-50 backdrop-blur-md text-slate-600 rounded-lg mt-1 md:mt-0 max-w-[405px] ${isAccountVisible ? "block" : "hidden"} md:text-right`}>
-                <p className="text-sm mb-4 pl-1 break-words">Usuario: <span className="font-bold">{user.displayName}</span></p>
-                <p className="text-sm mb-4 pl-1 break-words">Email: <span className="font-bold">{user.email}</span></p>
-                <button onClick={handleLogOut} className={`group flex items-center gap-2 text-sm px-4 py-1 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 md:ml-auto`}>
+                <p className="text-sm py-2 border-t border-slate-100 pl-1 break-words">Usuario: <span className="font-bold">{user.displayName}</span></p>
+                <p className="text-sm py-2 border-t border-slate-100 pl-1 break-words">Email: <span className="font-bold">{user.email}</span></p>
+                <p className="text-sm py-2 border-y border-slate-100 pl-1 break-words">Teléfono: <span className="font-bold">{foundUser?.phone}</span></p>
+                <button onClick={handleLogOut} className={`group flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 md:ml-auto`}>
                   <IoLogOut size={24} />
                   <span className="text-left font-semibold">Cerrar sesión</span>
                 </button>
