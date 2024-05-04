@@ -8,10 +8,10 @@ import { HiQuestionMarkCircle } from "react-icons/hi2";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { UserAuth } from "@/app/context/AuthContext";
 import { ErrorMessage } from "../components/ErrorMessage/error-message";
-import GetUsers from "../components/getUsers/getUsers";
 import "./signup.css";
 import { addUser, db } from "../firebase";
 import { IoMdCloseCircle } from "react-icons/io";
+import GetUsersDB from "../components/getUsersDb/getUsersDb";
 
 export default function SignUp() {
   const {
@@ -23,10 +23,9 @@ export default function SignUp() {
 
   const { signUpFunction, logOut } = UserAuth();
 
-  const { usersList, loaded } = GetUsers();
-/*   console.log(usersList) */
+  const { usersDB } = GetUsersDB();
   
-  const usersListEmail = usersList.map(user => user.email);
+  const usersListEmail = usersDB.map(user => user.email);
   
   const [visibilityPass, setVisibilityPass] = useState<{
     [key: string]: boolean;
@@ -43,22 +42,16 @@ export default function SignUp() {
     return emailExists;
   };
 
-/*   console.log(watch("phone")) */
   const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    console.log(data.phone);
     if(checkNewEmail(data.email)) {
-      console.log("email registrado")
       setError("El correo electrónico ya se encuentra registrado.")
     } else {
-      console.log("email nuevo registrado")
       signUpFunction(data.email, data.pass)
       .then((userCredential: UserCredential) => {
         const user = userCredential.user;
         updateProfile(user, { displayName: data.userName });
         console.log("Registro exitoso:", user);
-        return addUser(db, { email: data.email, id: user.uid, phone: data.phone, userName: data.userName }, user.uid);
-        
+        return addUser(db, { email: data.email, phone: data.phone, userName: data.userName }, user.uid);
       })
       .then(() => {
         logOut()

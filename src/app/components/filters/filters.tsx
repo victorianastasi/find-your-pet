@@ -85,7 +85,7 @@ export const FilterComponent: React.FC<FilterProps> = (
       setToggle(!toggle);
     }
   };
-
+  
   const filteredItems = list
     .filter(
       (item) =>
@@ -175,6 +175,7 @@ export const FilterComponent: React.FC<FilterProps> = (
     const buttonLocation = event.currentTarget.textContent || "";
     setSelectedLocation(buttonLocation);
     setShowList(false);
+    setSearchIcon(true);
     if (inputSearch.current) {
       inputSearch.current.value = buttonLocation;
     }
@@ -224,7 +225,7 @@ export const FilterComponent: React.FC<FilterProps> = (
           />
           <button
             type="reset"
-            className={`absolute top-2 right-2 rounded-full block ${
+            className={`absolute top-2 right-2 rounded-full bg-white block ${
               searchIcon ? "inline-block" : "hidden"
             }`}
             onClick={inputLocationClear}
@@ -344,6 +345,7 @@ export const FilterComponent: React.FC<FilterProps> = (
                 date={item.date}
                 email={item.email}
                 userName={item.userName}
+                phone={item.phone}
               />
             ))
         )}

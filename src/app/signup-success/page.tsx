@@ -1,14 +1,10 @@
 "use client";
 import React from "react";
-import { UserAuth } from "../context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import { IoLogIn } from "react-icons/io5";
 
 export default function SignUpSuccessfull() {
-  const { user } = UserAuth();
-  console.log(user);
-  console.log(user.displayName);
   return (
     <div className="main-bg pt-14 md:pt-16 mb-10">
       {/* <a href="https://storyset.com/user">User illustrations by Storyset</a> */}

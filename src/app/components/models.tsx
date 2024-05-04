@@ -9,10 +9,16 @@ export type Item = {
   date: string;
   email: string;
   userName: string;
+  phone: string;
 };
 export type User = {
   id: string;
-  phone: number;
+  phone: string;
+  email: string;
+  userName: string;
+};
+export type UserDBType = {
+  phone: string;
   email: string;
   userName: string;
 };

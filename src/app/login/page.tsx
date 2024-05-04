@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { UserAuth } from "@/app/context/AuthContext";
 import { UserCredential } from "firebase/auth";
@@ -36,8 +36,8 @@ export default function LogIn() {
     logInFunction(data.email, data.pass)
     .then((userCredential: UserCredential) => {
       setLoader(true);
-      const user = userCredential.user;
-      console.log("Inicio de sesión exitoso:", user);
+      const userCred = userCredential.user;
+      console.log("Inicio de sesión exitoso:", userCred);
       router.push("/");
     })
     .catch((error: FirebaseError) => {

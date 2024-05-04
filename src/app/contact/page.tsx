@@ -3,9 +3,9 @@ import React from "react";
 import { UserAuth } from "../context/AuthContext";
 
 export default function Contact() { 
-  const {user} = UserAuth();
+  const {user, userDB} = UserAuth();
+  console.log(userDB)
   console.log(user)
-  console.log(user.displayName)
   return (
     <div className="main-bg pt-14 md:pt-16 mb-10">
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">

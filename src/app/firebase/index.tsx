@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs, Firestore, addDoc, setDoc, doc } from 'firebase/firestore/lite';
-import { Item, User } from "../components/models";
+import { Item, User, UserDBType } from "../components/models";
 import { getStorage } from 'firebase/storage';
 
 // web app's Firebase configuration
@@ -38,15 +38,15 @@ export async function addItem(db: Firestore, newItemData: Item) {
 }
 
 // Función para traer datos de Users
-export async function getUsers(db: Firestore) {
-  const usersCol = collection(db, 'users');
-  const usersSnapshot = await getDocs(usersCol);
-  const usersList = usersSnapshot.docs.map(doc => doc.data());
-  return usersList;
+export async function getUsersDb(db: Firestore) {
+  const usersCollectionRef = collection(db, 'users');
+  const usersSnapshot = await getDocs(usersCollectionRef);
+  const usersListDb: User[] = usersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as User);
+  return usersListDb;
 }
 
 // Función para agregar un nuevo user a la colección users
-export async function addUser(db: Firestore, newUserData: User, uid: string) {
+export async function addUser(db: Firestore, newUserData: UserDBType, uid: string) {
   try {
     const usersCol = collection(db, 'users');
     const docRef = doc(usersCol, uid);

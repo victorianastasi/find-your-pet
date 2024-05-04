@@ -5,42 +5,37 @@ import { HiQuestionMarkCircle } from "react-icons/hi2";
 import { addItem, db, storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./add.css";
-import { IoLogIn, IoTrashSharp } from "react-icons/io5";
+import { IoLogIn, IoTrashSharp, IoCloudUpload } from "react-icons/io5";
 import { BsSendCheck } from "react-icons/bs";
 import { FiCheckCircle } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import { FcLock } from "react-icons/fc";
+import { IoMdTrash } from "react-icons/io";
+import { v4 as uuidv4 } from 'uuid';
 
 import { Grid } from "react-loader-spinner";
 import Link from "next/link";
 import { UserAuth } from "../context/AuthContext";
 
 export default function Add() {
-  const { user } = UserAuth();
-  console.log(user)
+  const { user, userDB } = UserAuth();
 
   const formRef = useRef<HTMLFormElement>(null);
   const previewImg = useRef<HTMLImageElement>(null);
-  const previewActions = useRef<HTMLDivElement>(null);
+  const uploadingForm = useRef<HTMLDivElement>(null);
+  const cancelFileBtn = useRef<HTMLButtonElement>(null);
   const selectFile = useRef<HTMLSpanElement>(null);
-  const previewText = useRef<HTMLSpanElement>(null);
-  const alertPreview = useRef<HTMLDivElement>(null);
-  const alertPreviewText = useRef<HTMLDivElement>(null);
 
   const successForm = useRef<HTMLDivElement>(null);
 
   const noResults = "img/no-results.svg";
   const sent = "img/sent.svg";
 
-  const checkIcon =
-    '<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" color="#84CC16" height="24" width="24" xmlns="http://www.w3.org/2000/svg" style="color: rgb(132, 204, 22);"><path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm108.25 138.29-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32 122.59-145.91a16 16 0 0 1 24.5 20.58z"></path></svg>';
-
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
-  const [imageConfirmed, setImageConfirmed] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const [imageError, setImageError] = useState<boolean>(false);
 
-  const [uploading, setUploading] = useState<boolean>(false);
+  let imgUrl: string = '';
 
   const [departments, setDepartments] = useState<string[]>([]);
   const [localities, setLocalities] = useState<string[]>([]);
@@ -90,7 +85,7 @@ export default function Add() {
           .filter((localidad: any) => localidad.categoria === 'Entidad')
           .map((localidad: any) => localidad.nombre)
           .sort();
-          setLocalities(localidadesData);
+          localidadesData.length == 0 ? setLocalities([event.target.value]) : setLocalities(localidadesData);
         })
         .catch(error => {
           console.error("Error fetching localidades:", error);
@@ -103,73 +98,27 @@ export default function Add() {
   //Selección de Localidad
   const handleLocalityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLocality(event.target.value);
-    console.log(event.target.value)
   };
 
   // Manejo de archivo imagen
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
+    setImageError(false);
     const input = e.target as HTMLInputElement;
     const fileUrl = input.files?.[0];
 
     if (fileUrl) {
       setImageFile(fileUrl);
-      console.log("handleFileChange" + imageFile);
       setImageLoaded(true);
-      if (
-        previewActions.current &&
-        previewImg.current &&
-        selectFile.current &&
-        previewText.current
-      ) {
-        selectFile.current.classList.add("hidden");
-        previewText.current.innerHTML = "Imagen seleccionada: ";
 
+      cancelFileBtn.current?.classList.remove("hidden");
+
+      selectFile.current?.classList.add("hidden");
+    
+      if (previewImg.current) {
         previewImg.current.classList.remove("hidden");
         previewImg.current.src = fileUrl ? URL.createObjectURL(fileUrl) : "";
         previewImg.current.alt = fileUrl?.name ? fileUrl?.name : "";
-
-        previewActions.current.classList.remove("hidden");
-        previewActions.current.classList.add("flex");
-
-        alertPreview.current?.classList.remove("flex");
-        alertPreview.current?.classList.add("hidden");
-      }
-
-      /* console.log("file" +file) */
-      console.log("fileUrl.name" + fileUrl?.name);
-      console.log("fileUrl" + fileUrl);
-      console.log("imageLoaded" + imageLoaded);
-    }
-  };
-
-  // Subir imagen a Storage en Firebase
-  const uploadFileToStorage = async () => {
-    const storageRef = ref(storage, `img/${imageFile?.name}`);
-    setUploading(true); // Muestra el loader al iniciar la carga del archivo
-
-    try {
-      await uploadBytes(storageRef, imageFile!);
-      console.log("Archivo subido exitosamente.");
-
-      // Obtener la URL de la imagen y actualizar el estado
-      const downloadUrl = await getDownloadURL(storageRef);
-      console.log("downloadUrl: ", downloadUrl);
-      setImageUrl(downloadUrl);
-      console.log("imageUrl: ", imageUrl);
-      setImageConfirmed(true);
-      console.log("ImageConfirmed: ", imageConfirmed);
-    } catch (error) {
-      console.error("Error al subir el archivo:", error);
-    } finally {
-      setUploading(false); // Ocultar el loader al finalizar la carga del archivo
-      previewActions.current?.classList.remove("flex");
-      previewActions.current?.classList.add("hidden");
-      previewText.current?.classList.add("flex", "gap-2");
-      alertPreview.current?.classList.remove("flex");
-      alertPreview.current?.classList.add("hidden");
-      if (previewText.current) {
-        previewText.current.innerHTML = ` ${checkIcon} Imagen confirmada`;
       }
     }
   };
@@ -179,119 +128,107 @@ export default function Add() {
     setImageFile(null);
     setImageLoaded(false);
     selectFile.current?.classList.remove("hidden");
-
     previewImg.current?.classList.add("hidden");
+    cancelFileBtn.current?.classList.add("hidden");
+  };
 
-    previewActions.current?.classList.remove("flex");
-    previewActions.current?.classList.add("hidden");
+  // Subir imagen a Storage en Firebase
+  const uploadFileToStorage = async () => {
+    const fileId = uuidv4();
+    const storageRef = ref(storage, `img/${fileId}`);
 
-    alertPreview.current?.classList.remove("flex");
-    alertPreview.current?.classList.add("hidden");
+    try {
+      await uploadBytes(storageRef, imageFile!);
+      console.log("Archivo subido exitosamente.");
 
-    if (previewText.current) {
-      previewText.current.innerHTML = "No hay imagen seleccionada.";
-    }
+      // Obtener la URL de la imagen y actualizar el estado
+      const downloadUrl = await getDownloadURL(storageRef);
+      imgUrl = downloadUrl;
+      return imgUrl;
+    } catch (error) {
+      console.error("Error al subir el archivo:", error);
+    } 
+  };
+
+  //Manejo de texto en inputs
+  function capitalizeFirstLetter(value: string): string {
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  }
+
+  function lowerCaseExceptFirst(value: string): string {
+    const words = value.split(" ");
+    const firstWord = words.shift();
+    const restOfSentence = words.join(" ").toLowerCase();
+    return `${firstWord?.charAt(0).toUpperCase()}${firstWord?.slice(1).toLowerCase()} ${restOfSentence}`;
+  }
+
+  //scroll To Top
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   // Envio de formulario
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitLostPet = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    function capitalizeFirstLetter(value: string): string {
-      return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-    }
-    
-    function lowerCaseExceptFirst(value: string): string {
-      const words = value.split(" ");
-      const firstWord = words.shift();
-      const restOfSentence = words.join(" ").toLowerCase();
-      return `${firstWord?.charAt(0).toUpperCase()}${firstWord?.slice(
-        1
-      )} ${restOfSentence}`;
-    }
-
-    // Comprobación de values de inputs
-    const newName = capitalizeFirstLetter(formData.get("name") as string);
-    const type = formData.get("type") as string;
-    const age = formData.get("age") as string;
-    const location = formData.get("location") as string;
-    const district = formData.get("district") as string;
-    const description = lowerCaseExceptFirst(
-      formData.get("description") as string
-    );
-    const date = formatDate(formData.get("date") as string);
-    const email = user.email;
-    const userName = user.displayName;
-
-    const newData = {
-      type,
-      name: newName,
-      age,
-      location,
-      district,
-      description,
-      image: imageUrl,
-      date,
-      email,
-      userName,
-    };
-    console.log(newData);
-
-    const scrollToTop = () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    };
-
-    // Agrega el nuevo item a Firestore
-    console.log("imageUrl" + imageUrl === "");
-    console.log("uploading" + uploading);
-    console.log("imageConfirmed" + imageConfirmed);
-    console.log("imageUrl" + imageUrl);
-    console.log("imageLoaded form" + imageLoaded);
     if (imageLoaded) {
-      if (imageConfirmed) {
-        await addItem(db, newData);
-
-        // Limpia el formulario y muestra mensaje de éxito
-        if (formRef.current) {
-          formRef.current.reset();
-          setImageConfirmed(false);
-          scrollToTop();
-          formRef.current.classList.add("hidden");
-          successForm.current?.classList.remove("hidden");
-          successForm.current?.classList.add("flex");
-        }
-      } else {
-        console.log(
-          "Por favor, confirma la imagen antes de enviar el formulario."
-        );
-        alertPreview.current?.classList.remove("hidden");
-        alertPreview.current?.classList.add("flex");
-        if (alertPreviewText.current) {
-          alertPreviewText.current.innerHTML =
-            "Por favor, confirma la imagen antes de enviar el formulario.";
-        }
-      }
-    } else {
-      console.log("Por favor, sube una imagen antes de enviar el formulario.");
-      alertPreview.current?.classList.remove("hidden");
-      alertPreview.current?.classList.add("flex");
-      if (alertPreviewText.current) {
-        alertPreviewText.current.innerHTML =
-          "Por favor, sube una imagen antes de enviar el formulario.";
-      }
+      scrollToTop();
+      formRef.current?.classList.add("hidden");
+      uploadingForm.current?.classList.remove("hidden");
+  
+      const formData = new FormData(e.currentTarget);
+      
+      // Comprobación de values de inputs
+      const newName = capitalizeFirstLetter(formData.get("name") as string);
+      const type = formData.get("type") as string;
+      const age = formData.get("age") as string;
+      const location = formData.get("location") as string;
+      const district = formData.get("district") as string;
+      const description = lowerCaseExceptFirst(
+        formData.get("description") as string
+      );
+      const date = formatDate(formData.get("date") as string);
+      const email = userDB.email;
+      const userName = userDB.userName;
+      const phone = userDB.phone;
+  
+      // Subir imagen a storeage de firebase
+      await uploadFileToStorage();
+  
+      //Valores de Data
+      const newData = {
+        type,
+        name: newName,
+        age,
+        location,
+        district,
+        description,
+        image: imgUrl,
+        date,
+        email,
+        userName,
+        phone
+      };  
+      
+      await addItem(db, newData);
+  
+      formRef.current?.reset();
+      uploadingForm.current?.classList.add("hidden");
+      successForm.current?.classList.remove("hidden");
+      successForm.current?.classList.add("flex");
+    }else {
+      setImageError(true);
     }
   };
 
   const cancelForm = () => {
-    console.log(imageUrl);
     cancelFile();
     if (formRef.current) {
       formRef.current.reset();
-      setImageConfirmed(false);
     }
+    setImageError(false);
   };
 
   return (
@@ -313,11 +250,28 @@ export default function Add() {
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">
         Agrega una publicación de tu mascota perdida
       </h1>
-      <div className="flex justify-center mx-2 md:mx-0">
+      <div className="flex justify-center mx-2 md:mx-0 relative ">
+        
+        <div className="mx-2 md:mx-0 mt-8 md:mt-16 h-[70vh] hidden" ref={uploadingForm}>
+          <div className=" text-slate-800 p-6 py-16 rounded-2xl max-w-full md:min-w-[600px] md:max-w-2xl bg-slate-50/95">
+            <h2 className="text-2xl font-bold text-center mb-8">
+              Subiendo publicación{" "}
+              <IoCloudUpload size={28} className="inline-block text-indigo-500" />
+            </h2>
+            <Grid
+              visible={true}
+              height="80"
+              width="80"
+              color="#6366F1"
+              ariaLabel="Cargando"
+              wrapperClass="mx-auto w-fit"
+            />
+          </div>
+        </div>
         <form
           ref={formRef}
-          onSubmit={handleSubmit}
-          className="bg-slate-800 text-slate-50 p-6 rounded-2xl max-w-full md:max-w-2xl "
+          onSubmit={submitLostPet}
+          className="bg-slate-800 text-slate-50 p-6 rounded-2xl max-w-full md:max-w-2xl"
         >
           <fieldset className="flex flex-col md:flex-row justify-center items-center flex-wrap gap-4 md:gap-8 mx-auto ">
             <legend className="text-indigo-100 font-bold w-fit md:w-full mb-6 text-center text-xl tracking-wider py-3">
@@ -406,7 +360,7 @@ export default function Add() {
                 name="district"
                 id="district"
               >
-                <option value="">Todas</option>
+                <option value="">Seleccione una opción..</option>
                 {departments.map((department, index) => (
                   <option key={index} value={department}>
                     {department}
@@ -426,7 +380,7 @@ export default function Add() {
                 name="location"
                 id="location"
               >
-                <option value="">Todas</option>
+                <option value="">Seleccione una opción..</option>
                 {localities.map((locality, index) => (
                   <option key={index} value={locality}>
                     {locality}
@@ -467,69 +421,35 @@ export default function Add() {
                   className="opacity-0 absolute left-0 top-0 w-0.5 h-0.5"
                 />
               </div>
-              <div
-                className="flex flex-row flex-wrap gap-2 justify-center md:justify-between items-center p-2 pl-0 mt-2 bg-slate-50 rounded-lg relative"
-                id="preview"
-              >
-                <span
-                  id="preview-text"
-                  className="w-full md:w-4/5 pl-2 text-slate-700"
-                  ref={previewText}
-                >
-                  No hay imagen seleccionada.
-                </span>
-                <span
-                  className={`bg-slate-50 w-full h-full absolute rounded-lg justify-center items-center text-slate-700 ${
-                    uploading ? "flex" : "hidden"
-                  }`}
-                  id="file-loader"
-                >
-                  <Grid
-                    visible={true}
-                    height="40"
-                    width="40"
-                    color="#6366F1"
-                    ariaLabel="Cargando"
-                  />
+              <div className="flex flex-row flex-wrap 330:flex-nowrap gap-2 justify-center md:justify-between items-center p-2 pl-0 mt-2 bg-slate-50 rounded-lg relative">
+                <span className="w-full md:w-4/5 pl-2 text-slate-700">
+                  {imageLoaded ? "Imagen seleccionada:" : "No hay imagen seleccionada."}
                 </span>
                 <Image
-                  src={noResults}
-                  ref={previewImg}
-                  id="preview-img"
-                  className="preview-img hidden"
-                  width={72}
-                  height={72}
-                  alt="preview-img"
-                ></Image>
-                <div
-                  ref={previewActions}
-                  className="w-full flex-wrap gap-2 ml-2 hidden"
-                >
+                    src={noResults}
+                    ref={previewImg}
+                    id="preview-img"
+                    className="preview-img hidden"
+                    width={72}
+                    height={72}
+                    alt="preview-img"
+                  ></Image>
                   <button
-                    className="bg-red-800 hover:bg-red-900 text-white py-1 px-2 rounded w-full 550:w-[48%]"
+                    className="text-red-800 border border-red-800 hover:bg-red-800 hover:text-white py-2 px-2 ml-4 rounded text-center w-full 330:w-fit hidden"
                     type="button"
                     id="cancel-file"
+                    ref={cancelFileBtn}
                     onClick={cancelFile}
+                    aria-label="Cancelar"
                   >
-                    Cancelar
+                    <IoMdTrash size={24} className="inline-block" />
                   </button>
-                  <button
-                    className="bg-slate-700 hover:bg-slate-800 text-white py-1 px-2 rounded w-full 550:w-[48%]"
-                    id="confirm-file"
-                    type="button"
-                    onClick={uploadFileToStorage}
-                  >
-                    Confirmar imagen
-                  </button>
-                </div>
-                <div
-                  className="border-4 text-red-900 border-red-900 rounded-lg p-1 px-2 items-center justify-center w-full ml-2 hidden text-center"
-                  ref={alertPreview}
-                >
-                  <MdCancel size={20} className="inline-block mr-1" />
-                  <span ref={alertPreviewText}></span>
-                </div>
               </div>
+                {imageError && <p className="w-full md:w-4/5 pl-2 text-red-100 px-2 rounded flex items-center gap-1">
+                  <MdCancel size={20} className="inline-block text-red-600 text-sm" />
+                  <span>Debes subir una imagen para enviar el formulario.</span>
+                </p>}
+              
             </div>
             <div className="w-full flex gap-4 550:gap-2 mt-4 justify-between flex-wrap md:px-14">
               <button
@@ -553,6 +473,7 @@ export default function Add() {
       </div>
       {/* <a href="https://storyset.com/email">Email illustrations by Storyset</a> */}
       {/* <a href="https://storyset.com/email">Email illustrations by Storyset</a> */}
+      
       <div className="justify-center mx-2 md:mx-0 hidden" ref={successForm}>
         <div className=" text-slate-800 p-6 pt-0 rounded-2xl max-w-full md:max-w-2xl ">
           <h2 className="text-2xl font-bold text-center mb-8">

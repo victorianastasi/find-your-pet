@@ -5,7 +5,8 @@ import {
 	signInWithEmailAndPassword,
 	signOut,
 } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, db, getUsersDb } from '../firebase';
+import { User } from '../components/models';
 
 const AuthContext = createContext<any | null>(null);
 
@@ -17,27 +18,46 @@ export interface UserType {
 }
 
 export const AuthContextProvider = ({children,}: {children: React.ReactNode;}) => {
-	// Define the constants for the user and loading state
 	const [user, setUser] = useState<UserType>({ email: null, uid: null, displayName: null });
+	const [userDB, setUserDB] = useState<User>({ email: '', phone: '', userName: '', id: '' });
 	const [loading, setLoading] = useState<Boolean>(true);
-
-	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			if (user) {
+	  
+	  useEffect(() => {
+		const fetchUserData = async () => {
+		  try {	  
+			const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
+			  if (userAuth) {
 				setUser({
-					email: user.email,
-					uid: user.uid,
-					displayName: user.displayName
+				  email: userAuth.email,
+				  uid: userAuth.uid,
+				  displayName: userAuth.displayName
 				});
-			} else {
+	
+				// Esperar a que getUsersDb se complete y obtener los datos actualizados
+				const updatedUsersDbAuth = await getUsersDb(db);
+				console.log("updatedUsersDbAuth", updatedUsersDbAuth);
+				if (userAuth.email !== '' && updatedUsersDbAuth) {
+				  const foundUser = updatedUsersDbAuth.find((userData) => userData.id === userAuth.uid);
+				  console.log("foundUser", foundUser);
+				  if (foundUser) {
+					setUserDB({ email: foundUser.email, phone: foundUser.phone, id: foundUser.id, userName: foundUser.userName });
+				  }
+				}
+			  } else {
 				setUser({ email: null, uid: null, displayName: null });
-			}
-		});
-
-		setLoading(false);
-
-		return () => unsubscribe();
-	}, []);
+			  }
+			  setLoading(false);
+			});
+	  
+			return () => unsubscribe();
+		  } catch (error) {
+			console.error('Error fetching user data:', error);
+		  }
+		};
+	  
+		fetchUserData();
+	  
+	  }, []);
 
 	// Sign up the user
 	const signUpFunction = (email: string, password: string) => {
@@ -56,7 +76,7 @@ export const AuthContextProvider = ({children,}: {children: React.ReactNode;}) =
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, signUpFunction, logInFunction, logOut }}>
+		<AuthContext.Provider value={{ user, signUpFunction, logInFunction, logOut, userDB }}>
 			{loading ? null : children}
 		</AuthContext.Provider>
 	);

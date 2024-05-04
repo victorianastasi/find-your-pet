@@ -23,6 +23,7 @@ interface CardComponentProps {
   date?: string;
   email?: string;
   userName?: string;
+  phone?: string;
 }
 
 const CardBadge: React.FC<{ children?: string; customClass?: string }> = ({
@@ -58,13 +59,12 @@ const CardImage: React.FC<{ alt?: string; src?: string }> = ({
         className="object-cover object-center card__image"
       ></Image>
     </div>
-    
   );
 };
 
 const CardTitle: React.FC<{ children?: string }> = ({ children = "" }) => {
   return (
-    <h3 className="poppins-700 text-lg bg-slate-50 rounded md:pl-2 text-center md:text-left">
+    <h3 className="poppins-700 text-lg text-center md:text-left">
       {children.charAt(0).toUpperCase() + children.slice(1).toLocaleLowerCase()}
     </h3>
   );
@@ -98,11 +98,12 @@ export const CardComponent: React.FC<CardComponentProps> = (
     age,
     date,
     email,
-    userName
+    userName,
+    phone,
   } = props;
 
   const { user } = UserAuth();
-  console.log(user)
+
   let cardClassName = `flex flex-col md:flex-row md:gap-2 w-full max-w-xs md:max-w-[620px] bg-slate-200 rounded-lg text-slate-700 shadow-2xl cabin-400 ${customClass}`;
 
   return (
@@ -112,46 +113,52 @@ export const CardComponent: React.FC<CardComponentProps> = (
         {(location || district) && (
           <div className="text-right">
             <CardBadge customClass="bg-amber-700 mr-1">{location}</CardBadge>
-            <CardBadge customClass="bg-slate-700">{`Partido de ${district}`}</CardBadge>
+            <CardBadge customClass="bg-slate-700">{district}</CardBadge>
           </div>
         )}
-        <CardTitle>{title}</CardTitle>
+        <div className="flex justify-between items-center bg-slate-50 rounded px-2">
+          <CardTitle>{title}</CardTitle>
+          {date ? (
+            <span className="text-sm poppins-700 text-slate-600 px-1 rounded">
+              {date}
+            </span>
+          ) : (
+            <span className="text-sm font-bold bg-indigo-100 px-1 rounded">
+              Sin fecha
+            </span>
+          )}
+        </div>
+
         <p>Edad: {age}</p>
         {description && <p>{description}</p>}
-        {date ? <p className="text-sm">Fecha en que se perdió: {date}</p> : <p className="text-sm">Sin información sobre la fecha en que se perdió</p>}
-        <hr className="bg-slate-300 h-[2px]" />
-        <div className="text-sm">
-          <p className="mb-1">Publicado por:</p>
-          {user.email == null ? 
-          <div className="bg-indigo-50/80 rounded p-2 text-slate-600">
-            <p>Debes <a href="/login" className="text-blue-600 hover:text-blue-800 visited:text-blue-800">acceder a tu cuenta </a>para ver esta sección.</p>
+        {user.email == null ? (
+          <div className="bg-indigo-50/80 rounded p-2 text-slate-600 text-sm">
+            <p>
+              Debes{" "}
+              <a
+                href="/login"
+                className="text-blue-500 hover:text-blue-800 visited:text-blue-800"
+              >
+                acceder a tu cuenta{" "}
+              </a>
+              para ver los datos del anunciante.
+            </p>
           </div>
-          : 
+        ) : (
           <>
-            <CardContact icon={<RiUserFill />}>
-              Usuario:&nbsp;
-              {userName}
-            </CardContact>
-            <CardContact icon={<IoMail />}>
-              Email:&nbsp;
-              <a href={`mailto:${email}`}>{email}</a>
-            </CardContact>
+            <hr className="bg-slate-300 h-[2px]" />
+            <div className="text-sm">
+              <p className="mb-1">Publicado por:</p>
+              <CardContact icon={<RiUserFill />}>{userName}</CardContact>
+              <CardContact icon={<IoLogoWhatsapp />}>
+                <a href={`https://wa.me/${phone}`}>{phone}</a>
+              </CardContact>
+              <CardContact icon={<IoMail />}>
+                <a href={`mailto:${email}`}>{email}</a>
+              </CardContact>
+            </div>
           </>
-          }
-          
-          {/* {location && (
-            <CardContact icon={<IoLogoWhatsapp />}>
-              Teléfono:&nbsp;
-              <a href={`tel:${location}`}>{location}</a>
-            </CardContact>
-          )}
-          {district && (
-            <CardContact icon={<IoMail />}>
-              Email:&nbsp;
-              <a href={`mailto:${district}`}>{district}</a>
-            </CardContact>
-          )} */}
-        </div>
+        )}
       </div>
     </div>
   );
