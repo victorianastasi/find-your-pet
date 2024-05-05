@@ -1,17 +1,19 @@
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
+import Link from "next/link";
 import { UserCredential, updateProfile } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { useRouter } from "next/navigation";
 import { HiQuestionMarkCircle } from "react-icons/hi2";
-import { IoEye, IoEyeOff } from "react-icons/io5";
+import { IoEye, IoEyeOff, IoLogIn } from "react-icons/io5";
 import { UserAuth } from "@/app/context/AuthContext";
 import { ErrorMessage } from "../components/ErrorMessage/error-message";
-import "./signup.css";
 import { addUser, db } from "../firebase";
 import { IoMdCloseCircle } from "react-icons/io";
 import GetUsersDB from "../components/getUsersDb/getUsersDb";
+import { RotatingSquare } from "react-loader-spinner";
+import "./signup.css";
 
 export default function SignUp() {
   const {
@@ -34,8 +36,8 @@ export default function SignUp() {
     passConfirm: false,
   });
   const [error, setError] = useState("");
-
-  const router = useRouter();
+  const [loadingSignup, setLoadingSignup] = useState(false);
+  const [signupComplete, setSignupComplete] = useState(false);
 
   const checkNewEmail = (email: string) => {
     const emailExists = usersListEmail.some((userEmail) => userEmail === email);
@@ -46,6 +48,7 @@ export default function SignUp() {
     if(checkNewEmail(data.email)) {
       setError("El correo electrónico ya se encuentra registrado.")
     } else {
+      setLoadingSignup(true)
       signUpFunction(data.email, data.pass)
       .then((userCredential: UserCredential) => {
         const user = userCredential.user;
@@ -54,8 +57,9 @@ export default function SignUp() {
         return addUser(db, { email: data.email, phone: data.phone, userName: data.userName }, user.uid);
       })
       .then(() => {
-        logOut()
-        router.push("/signup-success");
+        setLoadingSignup(false);
+        logOut();
+        setSignupComplete(true);
       })
       .catch((error: FirebaseError) => {
         const errorCode = error.code;
@@ -75,10 +79,44 @@ export default function SignUp() {
   const activeButton = watch("userName") != "" && watch("email") != "" && watch("pass") != "" && watch("passConfirm") != "";
 
   return (
-    <div className="main-bg pt-14 md:pt-16 mb-10  h-screen">
+    <div className="main-bg pt-14 md:pt-16 mb-10 h-screen">
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">
         Regístrate
       </h1>
+      {signupComplete && 
+      <div className="bg-slate-50/50 rounded-lg mx-2 md:rounded-full max-w-[533px] 550:mx-auto mt-16">
+        <div className="flex flex-col items-center gap-4 pt-16 pb-24 mt-4">
+          <h1 className="text-center text-2xl font-bold text-slate-700 max-w-[200px]">
+            Cuenta creada con éxito
+          </h1>
+          <Image src="img/login.svg" width={250} height={350} alt=""></Image>
+          {/* <a href="https://storyset.com/user">User illustrations by Storyset</a> */}
+          <Link
+            href="/login"
+            className="group flex items-center gap-2 px-4 py-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[250px] border-gray-700 bg-gray-700 text-white shadow-lg"
+          >
+            <IoLogIn size={24} className="min-w-[24px]" />
+            <span className="text-center">Ingresa a tu cuenta</span>
+          </Link>
+        </div>
+      </div>
+      }
+      
+      {loadingSignup && 
+      <div className="flex flex-col items-center justify-center mx-auto bg-slate-50/80 text-slate-600 p-12 rounded-2xl max-w-full md:max-w-2xl 550:max-w-sm">
+        <p className="text-lg font-bold">Aguarda un momento</p>
+        <p className="text-lg font-bold">Estamos registrando tus datos</p>
+        <RotatingSquare
+        visible={true}
+        height="140"
+        width="140"
+        color="rgb(99 102 241)"
+        ariaLabel="rotating-square-loading"
+        wrapperStyle={{}}
+        wrapperClass="my-8"
+        />
+      </div>}
+      {!loadingSignup && !signupComplete &&
       <div className="flex justify-center mx-2 md:mx-0">
         <form
           className="bg-slate-50/80 text-slate-700 p-6 md:px-12 rounded-2xl max-w-full md:max-w-2xl 550:max-w-sm "
@@ -313,6 +351,7 @@ export default function SignUp() {
           </fieldset>
         </form>
       </div>
+      }
     </div>
   );
 }
