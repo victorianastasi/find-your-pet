@@ -129,8 +129,8 @@ export const CardComponent: React.FC<CardComponentProps> = (
           )}
         </div>
 
-        <p>Edad: {age}</p>
-        {description && <p>{description}</p>}
+        <p className="text-sm">Edad: {age}</p>
+        {description && <p className="text-sm">{description}</p>}
         {user.email == null ? (
           <div className="bg-indigo-50/80 rounded p-2 text-slate-600 text-sm">
             <p>
@@ -148,7 +148,7 @@ export const CardComponent: React.FC<CardComponentProps> = (
           <>
             <hr className="bg-slate-300 h-[2px]" />
             <div className="text-sm">
-              <p className="mb-1">Publicado por:</p>
+              <p className="mb-1 text-xs">Publicado por:</p>
               <CardContact icon={<RiUserFill />}>{userName}</CardContact>
               <CardContact icon={<IoLogoWhatsapp />}>
                 <a href={`https://wa.me/${phone}`}>{phone}</a>
