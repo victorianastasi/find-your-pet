@@ -21,3 +21,9 @@
 .card__contact a:focus {
   outline-color: rgb(30 64 175);
 }
+
+.card-contact a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
