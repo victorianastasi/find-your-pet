@@ -225,7 +225,7 @@ export default function ParallaxCover() {
       >
         <div className="flex flex-col-reverse gap-0 items-center relative w-[500px]">
           <Link
-            href="/search"
+            href="/add"
             className="group bg-slate-50 hover:bg-indigo-600 hover:shadow-lg hover:scale-105 transition-all rounded-full shadow-lg w-fit mx-2 px-2 md:px-12 py-3 flex items-center justify-center gap-3 max-[320px]:text-sm md:text-xl absolute md:bottom-0 bottom-[-8px]"
           >
             <BiSolidMessageSquareAdd
@@ -263,7 +263,7 @@ export default function ParallaxCover() {
           ></div>
 
           <Link
-            href="/search"
+            href="/contact"
             className="group bg-slate-50 hover:bg-sky-500 hover:shadow-lg hover:scale-105 transition-all rounded-full shadow-lg w-fit px-6 md:px-12 md:mx-20 py-3 flex items-center justify-center gap-3 max-[320px]:text-sm md:text-xl "
           >
             <IoChatboxEllipses
