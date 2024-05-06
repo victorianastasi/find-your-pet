@@ -79,7 +79,7 @@ export default function SignUp() {
   const activeButton = watch("userName") != "" && watch("email") != "" && watch("pass") != "" && watch("passConfirm") != "";
 
   return (
-    <div className="main-bg pt-14 md:pt-16 mb-10 h-screen">
+    <div className="main-bg pt-14 md:pt-16 mb-10 h-[calc(100vh-64px)]">
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">
         Regístrate
       </h1>

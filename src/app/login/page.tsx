@@ -51,7 +51,7 @@ export default function LogIn() {
   const disabledBtn = watch("email") != ""  && watch("pass") != "";
 
   return (
-    <div className="main-bg pt-14 md:pt-16 mb-10  h-screen">
+    <div className="main-bg pt-14 md:pt-16 mb-10 h-[calc(100vh-64px)]">
       <h1 className="text-center my-8 text-2xl font-bold text-slate-50">
         Log In
       </h1>
