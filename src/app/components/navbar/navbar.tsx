@@ -125,7 +125,7 @@ export default function NavbarComponent() {
   }, [headerContentRef, toggleButtonRef, toggleAccountRef]);
   
   const LinksStyles =
-    "group flex items-center gap-2 text-sm px-4 py-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
+    "group flex items-center gap-2 text-sm 880:px-4 p-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
   const LinksIconStyles =
     "text-gray-700 md:text-white md:group-hover:text-amber-600";
   
@@ -204,7 +204,7 @@ export default function NavbarComponent() {
             </button>
           </div>
           <div
-            className={`md:flex md:flex-row gap-4  md:bg-transparent md:w-auto md:min-h-fit md:pt-0 md:px-0 flex flex-col ml-auto min-h-screen w-4/5 rounded-md absolute md:static top-[56px] right-0 bg-white/80 backdrop-blur-md ${
+            className={`md:flex md:flex-row gap-4 md:gap-2 880:gap-4 md:bg-transparent md:w-auto md:min-h-fit md:pt-0 md:px-0 flex flex-col ml-auto min-h-screen w-4/5 rounded-md absolute md:static top-[56px] right-0 bg-white/80 backdrop-blur-md ${
               isContentVisible ? "navbar-slide-in" : "navbar-slide-out"
             }`}
             ref={headerContentRef}
