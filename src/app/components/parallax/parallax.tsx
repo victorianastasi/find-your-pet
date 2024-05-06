@@ -31,7 +31,7 @@ const data = "/img/data.svg";
 export default function ParallaxCover() {
   const parallaxRef = useRef<IParallax>(null!);
   return (
-    <Parallax ref={parallaxRef} pages={3} id="parallax-cover">
+    <Parallax ref={parallaxRef} pages={3} id="parallax-cover bg-parallax">
       <ParallaxLayer
         offset={1}
         speed={1}

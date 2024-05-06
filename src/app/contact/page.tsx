@@ -21,7 +21,7 @@ export default function Contact() {
           <a href="https://wa.me/1511111111">15-1111-1111</a>
         </CardContactComponent>
         <CardContactComponent icon={<IoLogoGithub  />} iconBgHex="#171515">
-          <p style={{'color': '#171515;'}}>GitHub</p>
+          <p style={{'color': '#171515'}}>GitHub</p>
           <a href="https://github.com/victorianastasi">victorianastasi</a>
         </CardContactComponent>
       </div>

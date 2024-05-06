@@ -40,9 +40,6 @@ export const AuthContextProvider = ({
     id: "",
   });
   const [loading, setLoading] = useState<Boolean>(true);
-  const logoutTimer = useRef<NodeJS.Timeout | null>(null);
-  const inactivityTimeout = 30 * 60 * 1000; //30 minutos
-  const isScrolling = useRef<boolean>(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -70,45 +67,6 @@ export const AuthContextProvider = ({
                   id: foundUser.id,
                   userName: foundUser.userName,
                 });
-
-                const activityHandler = () => {
-                  if (isScrolling.current) {
-                    return;
-                  }
-                  if (logoutTimer.current !== null) {
-                    clearTimeout(logoutTimer.current);
-                  }
-                  logoutTimer.current = setTimeout(() => {
-                    signOut(auth);
-                    setUser({ email: null, uid: null, displayName: null });
-                  }, inactivityTimeout);
-                };
-
-                // actividad de eventos que indican actividad del usuario
-                document.addEventListener("click", activityHandler);
-                document.addEventListener("mousemove", activityHandler);
-                document.addEventListener("keydown", activityHandler);
-                window.addEventListener("scroll", () => {
-                  isScrolling.current = true;
-                  setTimeout(() => {
-                    isScrolling.current = false;
-                  }, 100);
-                });
-
-                return () => {
-                  if (logoutTimer.current !== null) {
-                    clearTimeout(logoutTimer.current);
-                  }
-                  document.removeEventListener("click", activityHandler);
-                  document.removeEventListener("mousemove", activityHandler);
-                  document.removeEventListener("keydown", activityHandler);
-                  window.removeEventListener("scroll", () => {
-                    isScrolling.current = true;
-                    setTimeout(() => {
-                      isScrolling.current = false;
-                    }, 100);
-                  });
-                };
               }
             }
           } else {
@@ -124,7 +82,7 @@ export const AuthContextProvider = ({
     };
 
     fetchUserData();
-  }, [inactivityTimeout]);
+  }, []);
 
   // Sign up the user
   const signUpFunction = (email: string, password: string) => {
@@ -138,9 +96,6 @@ export const AuthContextProvider = ({
 
   // Logout the user
   const logOut = async () => {
-    if (logoutTimer.current !== null) {
-      clearTimeout(logoutTimer.current);
-    }
     setUser({ email: null, uid: null, displayName: null });
     return await signOut(auth);
   };

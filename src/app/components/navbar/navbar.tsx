@@ -10,10 +10,9 @@ import { FiMenu } from "react-icons/fi";
 import { IoChatboxEllipses, IoLogIn, IoLogOut, IoChevronDown  } from "react-icons/io5";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 import { HiMiniUserCircle } from "react-icons/hi2";
-import { UserAuth } from "@/app/context/AuthContext";
-
 import { usePathname } from "next/navigation";
-
+import { PiNotebookFill } from "react-icons/pi";
+import { UserAuth } from "@/app/context/AuthContext";
 
 export default function NavbarComponent() {
   const { user, logOut, userDB } = UserAuth();
@@ -125,7 +124,7 @@ export default function NavbarComponent() {
   }, [headerContentRef, toggleButtonRef, toggleAccountRef]);
   
   const LinksStyles =
-    "group flex items-center gap-2 text-sm 880:px-4 p-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
+    "group flex items-center gap-2 text-[13px] 880:text-sm p-2 880:px-4 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
   const LinksIconStyles =
     "text-gray-700 md:text-white md:group-hover:text-amber-600";
   
@@ -149,12 +148,11 @@ export default function NavbarComponent() {
             }`}
           >
             {React.cloneElement(icon, {
-              className: `${
+              className: `text-xl md:text-lg lg:text-2xl ${
                 pathname == href
                   ? "text-amber-600"
                   : LinksIconStyles
               }`,
-              size: 24,
             })}
             <span className="text-left max-[320px]:text-[13px]">{text}</span>
           </Link>
@@ -204,7 +202,7 @@ export default function NavbarComponent() {
             </button>
           </div>
           <div
-            className={`md:flex md:flex-row gap-4 md:gap-2 880:gap-4 md:bg-transparent md:w-auto md:min-h-fit md:pt-0 md:px-0 flex flex-col ml-auto min-h-screen w-4/5 rounded-md absolute md:static top-[56px] right-0 bg-white/80 backdrop-blur-md ${
+            className={`md:flex md:flex-row gap-4 md:gap-1 880:gap-2 lg:gap-4 md:bg-transparent md:w-auto md:min-h-fit md:pt-0 md:px-0 flex flex-col ml-auto min-h-screen w-4/5 rounded-md absolute md:static top-[56px] right-0 bg-white/80 backdrop-blur-md ${
               isContentVisible ? "navbar-slide-in" : "navbar-slide-out"
             }`}
             ref={headerContentRef}
@@ -218,8 +216,8 @@ export default function NavbarComponent() {
             <Links />
             {user.email != null && 
             <div className="md:relative mx-6 md:mx-0" ref={toggleAccountRef}>
-              <button  onClick={toggleAccount} className={`group flex items-center gap-2 text-sm px-4 py-2 leading-none rounded-full border-2 md:border-1 md:hover:bg-slate-900  max-w-[205px] border-gray-700 md:text-white w-full text-gray-700 ${isAccountVisible ? "bg-slate-900 text-white md:border-slate-900" : "bg-transparent md:border-slate-50 md:hover:border-slate-900"}`} >
-                <HiMiniUserCircle size={24} className={`md:text-white md:group-hover:text-amber-400 `} />
+              <button  onClick={toggleAccount} className={`group flex items-center gap-2 text-[13px] 880:text-sm p-2 880:px-4 py-2 leading-none rounded-full border-2 md:border-1 md:hover:bg-slate-900  max-w-[205px] border-gray-700 md:text-white w-full text-gray-700 ${isAccountVisible ? "bg-slate-900 text-white md:border-slate-900" : "bg-transparent md:border-slate-50 md:hover:border-slate-900"}`} >
+                <HiMiniUserCircle className={`md:text-white md:group-hover:text-amber-400 text-xl md:text-lg lg:text-2xl `} />
                 <span className={`text-left max-[320px]:text-[13px]`}>Tu cuenta</span>
                 <IoChevronDown size={20} className={`md:text-white  ml-auto transition-all ${isAccountVisible ? "rotate-180" : "rotate-0"}`} />
               </button>
@@ -234,6 +232,10 @@ export default function NavbarComponent() {
                 <div className="text-sm py-2 border-y border-slate-100 pl-1 break-words flex flex-col ">
                   <span className="text-xs text-gray-400 tracking-wider">Teléfono:</span>
                   <span className="font-bold">{userDB.phone}</span></div>
+                <Link href="/account" onClick={() => setIsAccountVisible(false)} className={`group flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-slate-800 text-slate-800 border-slate-800 md:ml-auto w-fit`}>
+                  <PiNotebookFill size={24} />
+                  <span className="text-left font-semibold">Tus publicaciones</span>
+                </Link>
                 <button onClick={handleLogOut} className={`group flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 md:ml-auto`}>
                   <IoLogOut size={24} />
                   <span className="text-left font-semibold">Cerrar sesión</span>

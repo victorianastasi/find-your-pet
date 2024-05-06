@@ -125,6 +125,10 @@ main {
   background-image: linear-gradient(to bottom, #D97808, transparent);
 }
 
+.bg-parallax {
+  background-image: linear-gradient(to bottom, #D97808, #e9c193);
+}
+
 .navbar-slide-in {
   
   animation: slideIn 0.25s ease-out forwards;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
-import { IoMail, IoSquare } from "react-icons/io5";
+import { IoMail, IoSquare, IoTrashSharp } from "react-icons/io5";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { RiUserFill } from "react-icons/ri";
 
@@ -159,6 +159,60 @@ export const CardComponent: React.FC<CardComponentProps> = (
             </div>
           </>
         )}
+      </div>
+    </div>
+  );
+};
+
+
+export const CardComponentPublication: React.FC<CardComponentProps> = (
+  props: React.PropsWithChildren<CardComponentProps>
+) => {
+  const {
+    imageSrc = defaulPets,
+    location,
+    district,
+    title,
+    description,
+    customClass = "",
+    age,
+    date,
+  } = props;
+
+
+  let cardClassName = `flex flex-col w-full max-w-[384px] min-h-96 bg-slate-200 rounded-lg text-slate-700 shadow-2xl cabin-400 group relative transition-all ${customClass}`;
+
+  return (
+    <div className={cardClassName}>
+      <button className={`flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 ml-auto z-[1] bg-slate-50/75 max-w-fit`}>
+        <IoTrashSharp size={20} />
+        <span className="text-left font-semibold">Eliminar publicación</span>
+      </button>
+      
+      <div className="min-h-full min-w-full">
+        <Image
+          src={imageSrc}
+          alt={title}
+          fill={true}
+          className="object-cover object-center rounded"
+        ></Image>
+      </div>
+      <div className="p-2 flex flex-col gap-1 w-full absolute bottom-0 bg-slate-900/70 text-white rounded lg:max-h-[40px] lg:overflow-hidden group-hover:max-h-full group-hover:overflow-visible transition-all duration-300">
+        <div className="flex justify-between items-center rounded px-2">
+          <CardTitle>{title}</CardTitle>
+          {date ? (
+            <span className="text-sm poppins-700 px-1 rounded">
+              {date}
+            </span>
+          ) : (
+            <span className="text-sm font-bold bg-indigo-100 px-1 rounded">
+              Sin fecha
+            </span>
+          )}
+        </div>
+        <p className="text-sm">Partido: {district}</p>
+        <p className="text-sm">Localidad: {location}</p>
+        <p className="text-sm">Edad: {age}. {description && description}</p>
       </div>
     </div>
   );
