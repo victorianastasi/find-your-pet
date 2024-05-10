@@ -37,7 +37,6 @@ export default function LogIn() {
     .then((userCredential: UserCredential) => {
       setLoader(true);
       const userCred = userCredential.user;
-      console.log("Inicio de sesión exitoso:", userCred);
       router.push("/");
     })
     .catch((error: FirebaseError) => {

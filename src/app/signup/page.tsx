@@ -53,7 +53,6 @@ export default function SignUp() {
       .then((userCredential: UserCredential) => {
         const user = userCredential.user;
         updateProfile(user, { displayName: data.userName });
-        console.log("Registro exitoso:", user);
         return addUser(db, { email: data.email, phone: data.phone, userName: data.userName }, user.uid);
       })
       .then(() => {

@@ -54,12 +54,10 @@ export const AuthContextProvider = ({
 
             // Esperar a que getUsersDb se complete y obtener los datos actualizados
             const updatedUsersDbAuth = await getUsersDb(db);
-            console.log("updatedUsersDbAuth", updatedUsersDbAuth);
             if (userAuth.email !== "" && updatedUsersDbAuth) {
               const foundUser = updatedUsersDbAuth.find(
                 (userData) => userData.id === userAuth.uid
               );
-              console.log("foundUser", foundUser);
               if (foundUser) {
                 setUserDB({
                   email: foundUser.email,

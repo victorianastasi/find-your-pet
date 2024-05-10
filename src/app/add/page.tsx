@@ -139,7 +139,6 @@ export default function Add() {
 
     try {
       await uploadBytes(storageRef, imageFile!);
-      console.log("Archivo subido exitosamente.");
 
       // Obtener la URL de la imagen y actualizar el estado
       const downloadUrl = await getDownloadURL(storageRef);
