@@ -24,6 +24,8 @@ interface CardComponentProps {
   email?: string;
   userName?: string;
   phone?: string;
+  id?: string;
+  deleteAction?: () => void;
 }
 
 const CardBadge: React.FC<{ children?: string; customClass?: string }> = ({
@@ -62,9 +64,9 @@ const CardImage: React.FC<{ alt?: string; src?: string }> = ({
   );
 };
 
-const CardTitle: React.FC<{ children?: string }> = ({ children = "" }) => {
+const CardTitle: React.FC<{ children?: string; customClass?: string }> = ({ children = "", customClass }) => {
   return (
-    <h3 className="poppins-700 text-lg text-center md:text-left">
+    <h3 className={`poppins-700 text-lg text-center md:text-left ${customClass}`}>
       {children.charAt(0).toUpperCase() + children.slice(1).toLocaleLowerCase()}
     </h3>
   );
@@ -164,7 +166,6 @@ export const CardComponent: React.FC<CardComponentProps> = (
   );
 };
 
-
 export const CardComponentPublication: React.FC<CardComponentProps> = (
   props: React.PropsWithChildren<CardComponentProps>
 ) => {
@@ -177,18 +178,20 @@ export const CardComponentPublication: React.FC<CardComponentProps> = (
     customClass = "",
     age,
     date,
+    deleteAction
   } = props;
-
 
   let cardClassName = `flex flex-col w-full max-w-[384px] min-h-96 bg-slate-200 rounded-lg text-slate-700 shadow-2xl cabin-400 group relative transition-all ${customClass}`;
 
   return (
     <div className={cardClassName}>
-      <button className={`flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 ml-auto z-[1] bg-slate-50/75 max-w-fit`}>
+      <button
+        className={`flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 ml-auto z-[1] bg-slate-50/85 max-w-fit`}
+        onClick={deleteAction}
+      >
         <IoTrashSharp size={20} />
         <span className="text-left font-semibold">Eliminar publicación</span>
       </button>
-      
       <div className="min-h-full min-w-full">
         <Image
           src={imageSrc}
@@ -197,13 +200,11 @@ export const CardComponentPublication: React.FC<CardComponentProps> = (
           className="object-cover object-center rounded"
         ></Image>
       </div>
-      <div className="p-2 flex flex-col gap-1 w-full absolute bottom-0 bg-slate-900/70 text-white rounded lg:max-h-[40px] lg:overflow-hidden group-hover:max-h-full group-hover:overflow-visible transition-all duration-300">
+      <div className="p-2 flex flex-col gap-1 w-full absolute bottom-0 bg-gradient-to-b from-slate-900/60 to-slate-900 text-white rounded lg:h-[68px] lg:overflow-hidden hover:h-full hover:pt-12 hover:overflow-visible transition-all duration-300">
         <div className="flex justify-between items-center rounded px-2">
-          <CardTitle>{title}</CardTitle>
+          <CardTitle customClass="py-4">{title}</CardTitle>
           {date ? (
-            <span className="text-sm poppins-700 px-1 rounded">
-              {date}
-            </span>
+            <span className="text-sm poppins-700 px-1 rounded">{date}</span>
           ) : (
             <span className="text-sm font-bold bg-indigo-100 px-1 rounded">
               Sin fecha
@@ -212,7 +213,12 @@ export const CardComponentPublication: React.FC<CardComponentProps> = (
         </div>
         <p className="text-sm">Partido: {district}</p>
         <p className="text-sm">Localidad: {location}</p>
-        <p className="text-sm">Edad: {age}. {description && description}</p>
+        <p className="text-sm">
+          Edad: {age}.
+        </p>
+        <p className="text-sm">
+          Descripción: {description && description}
+        </p>
       </div>
     </div>
   );

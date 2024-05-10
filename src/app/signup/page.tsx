@@ -86,9 +86,9 @@ export default function SignUp() {
       {signupComplete && 
       <div className="bg-slate-50/50 rounded-lg mx-2 md:rounded-full max-w-[533px] 550:mx-auto mt-16">
         <div className="flex flex-col items-center gap-4 pt-16 pb-24 mt-4">
-          <h1 className="text-center text-2xl font-bold text-slate-700 max-w-[200px]">
+          <h2 className="text-center text-2xl font-bold text-slate-700 max-w-[200px]">
             Cuenta creada con éxito
-          </h1>
+          </h2>
           <Image src="img/login.svg" width={250} height={350} alt=""></Image>
           {/* <a href="https://storyset.com/user">User illustrations by Storyset</a> */}
           <Link

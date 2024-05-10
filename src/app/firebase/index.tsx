@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, collection, getDocs, Firestore, addDoc, setDoc, doc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, Firestore, addDoc, setDoc, doc, DocumentData, deleteDoc } from 'firebase/firestore/lite';
 import { Item, User, UserDBType } from "../components/models";
 import { getStorage } from 'firebase/storage';
 
@@ -23,7 +23,12 @@ export const db = getFirestore(app);
 export async function getItems(db: Firestore) {
   const itemsCol = collection(db, 'items');
   const itemsSnapshot = await getDocs(itemsCol);
-  const itemsList = itemsSnapshot.docs.map(doc => doc.data());
+  const itemsList: DocumentData[] = [];
+  
+  itemsSnapshot.forEach((doc) => {
+    itemsList.push({ id: doc.id, ...doc.data() });
+  });
+
   return itemsList;
 }
 
@@ -35,6 +40,15 @@ export async function addItem(db: Firestore, newItemData: Item) {
   } catch (error) {
     console.error("Error al agregar el item:", error);
   }
+}
+
+// Función para eliminar un documento de Items por su ID
+export async function deleteItemById(db: Firestore, itemId: string) {
+  const itemRef = doc(db, 'items', itemId);
+
+  await deleteDoc(itemRef);
+  
+  console.log(`El documento con ID ${itemId} ha sido eliminado correctamente.`);
 }
 
 // Función para traer datos de Users
