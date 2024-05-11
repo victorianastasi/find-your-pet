@@ -1,8 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap");
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -28,29 +28,22 @@ main {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-    /* background: #0A212E;
-  margin: 0px;
-  overflow: hidden;
-  animation: color-loop 18s infinite; */
 }
 
 .poppins-400 {
   font-family: "Poppins", sans-serif !important;
   font-weight: 400;
   font-style: normal;
-  color: rgb(15, 15, 15) !important;
 }
 .poppins-700 {
   font-family: "Poppins", sans-serif !important;
   font-weight: 700;
   font-style: normal;
-/*   color: rgb(15, 15, 15) !important; */
 }
 .cabin-400 {
   font-family: "Cabin", sans-serif !important;
   font-weight: 400;
   font-style: normal;
-/*   color: rgb(15, 15, 15) !important; */
 }
 .cabin {
   font-family: "Cabin", sans-serif !important;
@@ -70,7 +63,6 @@ main {
   @media screen and (min-width: 768px) {
     border-radius: 0 0 24px 24px;
   }
-  
 }
 
 @keyframes rotation {
@@ -83,7 +75,6 @@ main {
   100% {
     transform: rotate(360deg);
   }
-  
 }
 @keyframes slideIn {
   0% {
@@ -116,25 +107,22 @@ main {
   width: 450px;
   aspect-ratio: 1/1;
   @media screen and (min-width: 768px) {
-
     height: 450px;
   }
 }
 
 .main-bg {
-  background-image: linear-gradient(to bottom, #D97808, transparent);
+  background-image: linear-gradient(to bottom, #d97808, transparent);
 }
 
 .bg-parallax {
-  background-image: linear-gradient(to bottom, #D97808, #ede4da);
+  background-image: linear-gradient(to bottom, #d97808, #ede4da);
 }
 
 .navbar-slide-in {
-  
   animation: slideIn 0.25s ease-out forwards;
 }
 .navbar-slide-out {
-  
   animation: slideOut 0.5s ease-out forwards;
   @media screen and (min-width: 768px) {
     animation: none;
