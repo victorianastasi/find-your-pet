@@ -7,12 +7,18 @@ import {
   MdOutlineClose,
 } from "react-icons/md";
 import { FiMenu } from "react-icons/fi";
-import { IoChatboxEllipses, IoLogIn, IoLogOut, IoChevronDown  } from "react-icons/io5";
+import {
+  IoChatboxEllipses,
+  IoLogIn,
+  IoLogOut,
+  IoChevronDown,
+} from "react-icons/io5";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 import { HiMiniUserCircle } from "react-icons/hi2";
 import { usePathname } from "next/navigation";
 import { PiNotebookFill } from "react-icons/pi";
 import { UserAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function NavbarComponent() {
   const { user, logOut, userDB } = UserAuth();
@@ -27,14 +33,23 @@ export default function NavbarComponent() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isAccountVisible, setIsAccountVisible] = useState(false);
 
+  const router = useRouter();
+
   const handleLogOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       await logOut();
+      setIsContentVisible(false);
+      router.push("/");
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const handleAccountPublications = () => {
+    setIsAccountVisible(false);
+    setIsContentVisible(false);
+  };
 
   useEffect(() => {
     const handleScroll = (position: number) => {
@@ -85,7 +100,6 @@ export default function NavbarComponent() {
   const toggleAccount = () => {
     setIsAccountVisible(!isAccountVisible);
   };
-  
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -115,25 +129,28 @@ export default function NavbarComponent() {
         setIsAccountVisible(false);
       }
     };
-  
+
     document.addEventListener("mousedown", handleClickOutside);
-  
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [headerContentRef, toggleButtonRef, toggleAccountRef]);
-  
+
   const LinksStyles =
-    "group flex items-center gap-2 text-[13px] 880:text-sm p-2 880:px-4 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
+    "group flex items-center gap-2 text-[13px] md:text-xs 910:text-sm p-2 910:px-4 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-amber-600 hover:bg-white mx-6 md:mx-0 max-w-[205px] border-gray-700";
   const LinksIconStyles =
     "text-gray-700 md:text-white md:group-hover:text-amber-600";
-  
-    const handleLinkClick = () => {
+
+  const handleLinkClick = () => {
     setIsContentVisible(false);
   };
 
   const Links = () => {
-    const filteredLinks = user.email != null ? LINKS_DATA.filter(link => link.href !== "/login") : LINKS_DATA;
+    const filteredLinks =
+      user.email != null
+        ? LINKS_DATA.filter((link) => link.href !== "/login")
+        : LINKS_DATA;
     return (
       <>
         {filteredLinks.map(({ href, text, icon }, index) => (
@@ -149,9 +166,7 @@ export default function NavbarComponent() {
           >
             {React.cloneElement(icon, {
               className: `text-xl md:text-lg lg:text-2xl ${
-                pathname == href
-                  ? "text-amber-600"
-                  : LinksIconStyles
+                pathname == href ? "text-amber-600" : LinksIconStyles
               }`,
             })}
             <span className="text-left max-[320px]:text-[13px]">{text}</span>
@@ -162,10 +177,14 @@ export default function NavbarComponent() {
   };
 
   const LINKS_DATA = [
-    { href: "/search", icon: <MdContentPasteSearch />, text: "Ver todo" },
-    { href: "/add", icon: <BiSolidMessageSquareAdd />, text: "Agrega tu mascota" },
+    { href: "/search", icon: <MdContentPasteSearch />, text: "Publicaciones" },
+    {
+      href: "/add",
+      icon: <BiSolidMessageSquareAdd />,
+      text: "Agrega tu mascota",
+    },
     { href: "/contact", icon: <IoChatboxEllipses />, text: "Contactanos" },
-    { href: "/login", icon: <IoLogIn />, text: "Log In" }
+    { href: "/login", icon: <IoLogIn />, text: "Log In" },
   ];
 
   return (
@@ -214,35 +233,74 @@ export default function NavbarComponent() {
               />
             </button>
             <Links />
-            {user.email != null && 
-            <div className="md:relative mx-6 md:mx-0" ref={toggleAccountRef}>
-              <button  onClick={toggleAccount} className={`group flex items-center gap-2 text-[13px] 880:text-sm p-2 880:px-4 py-2 leading-none rounded-full border-2 md:border-1 md:hover:bg-slate-900  max-w-[205px] border-gray-700 md:text-white w-full text-gray-700 ${isAccountVisible ? "bg-slate-900 text-white md:border-slate-900" : "bg-transparent md:border-slate-50 md:hover:border-slate-900"}`} >
-                <HiMiniUserCircle className={`md:text-white md:group-hover:text-amber-400 text-xl md:text-lg lg:text-2xl `} />
-                <span className={`text-left max-[320px]:text-[13px]`}>Tu cuenta</span>
-                <IoChevronDown size={20} className={`md:text-white  ml-auto transition-all ${isAccountVisible ? "rotate-180" : "rotate-0"}`} />
-              </button>
-              <div className={`p-2 md:absolute right-0 top-12 md:min-w-64 border-2 border-slate-50 bg-slate-50/50 md:bg-slate-50 backdrop-blur-md text-slate-600 rounded-lg mt-1 md:mt-0 max-w-[405px] ${isAccountVisible ? "block" : "hidden"} md:text-right`}>
-                <div className="text-sm py-2 border-t border-slate-100 pl-1 break-words flex flex-col ">
-                  <span className="text-xs text-gray-400 tracking-wider">Usuario:</span>
-                  <span className="font-bold">{userDB.userName}</span>
-                </div>
-                <div className="text-sm py-2 border-t border-slate-100 pl-1 break-words flex flex-col ">
-                  <span className="text-xs text-gray-400 tracking-wider">Email:</span>
-                  <span className="font-bold">{userDB.email}</span></div>
-                <div className="text-sm py-2 border-y border-slate-100 pl-1 break-words flex flex-col ">
-                  <span className="text-xs text-gray-400 tracking-wider">Teléfono:</span>
-                  <span className="font-bold">{userDB.phone}</span></div>
-                <Link href="/account" onClick={() => setIsAccountVisible(false)} className={`group flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-slate-800 text-slate-800 border-slate-800 md:ml-auto w-fit`}>
-                  <PiNotebookFill size={24} />
-                  <span className="text-left font-semibold">Tus publicaciones</span>
-                </Link>
-                <button onClick={handleLogOut} className={`group flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 md:ml-auto`}>
-                  <IoLogOut size={24} />
-                  <span className="text-left font-semibold">Cerrar sesión</span>
+            {user.email != null && (
+              <div className="md:relative mx-6 md:mx-0" ref={toggleAccountRef}>
+                <button
+                  onClick={toggleAccount}
+                  className={`group flex items-center gap-2 text-[13px] md:text-xs 910:text-sm p-2 910:px-4 py-2 leading-none rounded-full border-2 md:border-1 md:hover:bg-slate-900  max-w-[205px] border-gray-700 md:text-white w-full text-gray-700 ${
+                    isAccountVisible
+                      ? "bg-slate-900 text-white md:border-slate-900"
+                      : "bg-transparent md:border-slate-50 md:hover:border-slate-900"
+                  }`}
+                >
+                  <HiMiniUserCircle
+                    className={`md:text-white md:group-hover:text-amber-400 text-xl md:text-lg lg:text-2xl `}
+                  />
+                  <span className={`text-left max-[320px]:text-[13px]`}>
+                    Tu cuenta
+                  </span>
+                  <IoChevronDown
+                    size={20}
+                    className={`md:text-white  ml-auto transition-all ${
+                      isAccountVisible ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
                 </button>
+                <div
+                  className={`p-2 md:absolute right-0 top-12 md:min-w-64 border-2 border-slate-50 bg-slate-50/50 md:bg-slate-50 backdrop-blur-md text-slate-600 rounded-lg mt-1 md:mt-0 max-w-[405px] ${
+                    isAccountVisible ? "block" : "hidden"
+                  } md:text-right`}
+                >
+                  <div className="text-sm py-2 border-t border-slate-100 pl-1 break-words flex flex-col ">
+                    <span className="text-xs text-gray-400 tracking-wider">
+                      Usuario:
+                    </span>
+                    <span className="font-bold">{userDB.userName}</span>
+                  </div>
+                  <div className="text-sm py-2 border-t border-slate-100 pl-1 break-words flex flex-col ">
+                    <span className="text-xs text-gray-400 tracking-wider">
+                      Email:
+                    </span>
+                    <span className="font-bold">{userDB.email}</span>
+                  </div>
+                  <div className="text-sm py-2 border-y border-slate-100 pl-1 break-words flex flex-col ">
+                    <span className="text-xs text-gray-400 tracking-wider">
+                      Teléfono:
+                    </span>
+                    <span className="font-bold">{userDB.phone}</span>
+                  </div>
+                  <Link
+                    href="/account"
+                    onClick={handleAccountPublications}
+                    className={`group flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-slate-800 text-slate-800 border-slate-800 md:ml-auto w-fit`}
+                  >
+                    <PiNotebookFill size={24} />
+                    <span className="text-left font-semibold">
+                      Tus publicaciones
+                    </span>
+                  </Link>
+                  <button
+                    onClick={handleLogOut}
+                    className={`group flex items-center gap-2 text-sm px-4 py-1 mt-2 leading-none rounded-full border-2 md:border-1 hover:border-transparent hover:text-white hover:bg-red-800 text-red-800 border-red-800 md:ml-auto`}
+                  >
+                    <IoLogOut size={24} />
+                    <span className="text-left font-semibold">
+                      Cerrar sesión
+                    </span>
+                  </button>
+                </div>
               </div>
-            </div>
-            }
+            )}
           </div>
         </nav>
         <div

@@ -10,12 +10,12 @@ export default function Search() {
 
   return (
     <div className="main-bg pt-14 md:pt-16 mb-10">
-      <h1 className="text-center my-8 text-2xl font-bold text-slate-50">Publicaciones</h1>
+      <h1 className="text-center mb-2 md:my-8 text-2xl font-bold text-slate-50">Publicaciones de mascotas perdidas</h1>
       {loaded ? 
       (
         <FilterComponent list={itemsList}></FilterComponent>
       ):
-      <div className="min-h-[500px] flex flex-col items-center justify-center text-slate-50 cabin">
+      <div className="min-h-[500px] flex flex-col items-center justify-start text-slate-50 cabin">
         <p className="text-xl mb-4">Cargando..</p>
         <ThreeCircles
           visible={true}

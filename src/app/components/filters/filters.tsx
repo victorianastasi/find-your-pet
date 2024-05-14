@@ -76,6 +76,9 @@ export const FilterComponent: React.FC<FilterProps> = (
   const handlePetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedPet(event.target.value);
     setVisibleItems(8);
+    if (window.innerWidth < 768) {
+      setToggle(false);
+    }
   };
 
   const toggleFilter = () => {
@@ -105,6 +108,9 @@ export const FilterComponent: React.FC<FilterProps> = (
 
   const handleOrderRecent = () => {
     setOrderRecent(!orderRecent);
+    if (window.innerWidth < 768) {
+      setToggle(false);
+    }
   };
 
   const FilterName = () => {
@@ -178,6 +184,9 @@ export const FilterComponent: React.FC<FilterProps> = (
     setSearchIcon(true);
     if (inputSearch.current) {
       inputSearch.current.value = buttonLocation;
+    }
+    if (window.innerWidth < 768) {
+      setToggle(false);
     }
   };
 
@@ -305,7 +314,7 @@ export const FilterComponent: React.FC<FilterProps> = (
           </button>
         </div>
         <div
-          className={`flex flex-col items-start justify-center flex-wrap gap-4 rounded-xl p-3 ${
+          className={`flex flex-col items-start justify-center flex-wrap gap-1 md:gap-4 rounded-xl px-3 pt-1 pb-3 ${
             toggle
               ? "absolute top-[42px] left-3 w-[15rem] bg-slate-800/70 z-10 backdrop-blur"
               : "hidden md:flex md:flex-row md:static md:w-fit bg-transparent"
@@ -313,8 +322,8 @@ export const FilterComponent: React.FC<FilterProps> = (
           ref={contentFilter}
         >
           {FilterName()}
-          <FilterPet />
           {FilterLocation()}
+          <FilterPet />
           <OrderDate />
         </div>
       </div>
